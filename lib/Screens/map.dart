@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:app_001/Screens/StationPage.dart';
 import 'package:app_001/main.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
+import 'package:rainbow_color/rainbow_color.dart';
 
 class map extends StatefulWidget {
   const map({super.key});
@@ -26,6 +25,7 @@ class StationMarker {
   final double lon;
   final double? air_temp;
   final double? precipSummary;
+  final int? date;
 
   const StationMarker({
     required this.name,
@@ -34,7 +34,8 @@ class StationMarker {
     required this.lat,
     required this.lon,
     required this.air_temp,
-    required this.precipSummary,  //agrimet does not have precip summary yet!
+    required this.precipSummary, //agrimet does not have precip summary yet!
+    required this.date,
   });
 
   //Use type casting as a saftey check
@@ -48,12 +49,17 @@ class StationMarker {
       lon: json['longitude'] as double,
       air_temp: json['Air Temperature [°F]'] as double,
       precipSummary: json['7-Day Precipitation [in]'],
+      date:  json['datetime'],
     );
   }
 }
 
 class _mapState extends State<map> {
   late double _markerSize;
+  late double maxTemp;
+  late double minTemp;
+  late bool showAggragateDataMarkers;
+
   late MapController mapController;
   late Icon hydrometStations;
   late Icon agrimetStations;
@@ -61,8 +67,7 @@ class _mapState extends State<map> {
       GeoJsonParser(defaultPolygonBorderColor: Colors.black26);
   bool showHydroMet = true;
 
-
-  //Defaults are set in initState 
+  //Defaults are set in initState
   @override
   void initState() {
     super.initState();
@@ -84,6 +89,11 @@ class _mapState extends State<map> {
     );
 
     getFavoriteStationList();
+
+    maxTemp = -999.99; //force these to change when called by findRange
+    minTemp = 999.99; //need to init to avoid error
+
+    showAggragateDataMarkers = true;
   }
 
   @override
@@ -92,7 +102,6 @@ class _mapState extends State<map> {
     super.dispose();
   }
 
-  
   Future<String> loadgeojsonString() async {
     return await rootBundle.loadString('lib/assets/mt_counties.geojson');
   }
@@ -115,16 +124,23 @@ class _mapState extends State<map> {
           width: _markerSize,
           point: LatLng(station.lat, station.lon),
           child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        HydroStationPage(station: station, hydroBool: 1),
-                  ),
-                );
-              },
-              child: hydrometStations),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      HydroStationPage(station: station, hydroBool: 1),
+                ),
+              );
+            },
+            child: Icon(
+              Icons.circle_sharp,
+              color: showAggragateDataMarkers
+                  ? setMarkerColor(station.air_temp!, true)  //change tempOrPrecip bool here
+                  : Color.fromARGB(255, 14, 70, 116),
+              size: _markerSize,
+            ),
+          ),
         ));
       } else if (!showHydroMet && station.subNetwork == "AgriMet") {
         markers.add(Marker(
@@ -132,16 +148,22 @@ class _mapState extends State<map> {
           height: _markerSize,
           width: _markerSize,
           child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        HydroStationPage(station: station, hydroBool: 0),
-                  ),
-                );
-              },
-              child: agrimetStations),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      HydroStationPage(station: station, hydroBool: 0),
+                ),
+              );
+            },
+            child: Icon(
+              Icons.star,
+              color: showAggragateDataMarkers? setMarkerColor(station.air_temp!, true)
+              : Color.fromARGB(255, 46, 155, 18),
+              size: _markerSize,
+            ),
+          ),
         ));
       }
     }
@@ -171,6 +193,7 @@ class _mapState extends State<map> {
 
   Future<List<Marker>> getMarkers() async {
     List<StationMarker> stationList = await getStations();
+    findRange(stationList); //setting max and min for markerColor
     List<Marker> markers = parseToMarkers(stationList);
     //List<Marker> markers = await compute(parseToMarkers, stationList);
     return markers;
@@ -191,6 +214,7 @@ class _mapState extends State<map> {
         lon: jsonMAP['stations'][i]['lon'],
         air_temp: jsonMAP['stations'][i]['air_temp'],
         precipSummary: jsonMAP['stations'][i]['precipSummary'],
+        date: jsonMAP['stations'][i]['date'],
       ));
     }
     // setState(() {
@@ -202,12 +226,102 @@ class _mapState extends State<map> {
   void _updateMarkerSize(double zoom) {
     if (zoom > 6.4) {
       setState(() {
-        _markerSize = 100.0 * (zoom / 13.0);
+        //_markerSize = 50.0 * (zoom / 13.0);
+        _markerSize = 20;
       });
     } else {
       setState(() {
-        _markerSize = 25;
+        _markerSize = 20;
       });
+    }
+  }
+
+    bool isCurrentDate(int dateFromData) {
+    DateTime now = DateTime.now();
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData);
+
+    return now.day == date.day &&
+        now.month == date.month &&
+        now.year == date.year;
+  }
+
+  void findRange(List<StationMarker> stationList) {
+
+    minTemp = 999.00;
+    maxTemp = -999.00;
+    //set global variables. Call from get markers
+    for (StationMarker station in stationList) {
+      if (station.air_temp! > maxTemp && station.air_temp != 999.0&& station.subNetwork == 'HydroMet' && isCurrentDate(station.date!)) {
+        //check max temp
+        maxTemp = station.air_temp!;
+      }
+
+      if (station.air_temp! < minTemp && station.subNetwork == 'HydroMet') {
+        //check min temp
+        minTemp = station.air_temp!;
+      }
+    }
+
+    print('maxTemp: $maxTemp , minTemp: $minTemp');
+
+  }
+
+  Color setMarkerColor(double input, bool tempOrPrecip) {
+    Rainbow rbColorTemp;
+
+    if (input < 32) {
+      //dynamic color range with hard break at 32 F
+      rbColorTemp = Rainbow(
+        spectrum: [
+          Colors.blue.shade900,
+          Colors.blue.shade700,
+          Colors.blue.shade500,
+          Colors.blue.shade300,
+          Colors.blue.shade100,
+          Colors.white,
+        ], //cold to hot
+        rangeStart:
+            minTemp, //min and max set in findRange() func called in getMarkers
+        rangeEnd: maxTemp,
+      );
+    } else {
+      rbColorTemp = Rainbow(
+        spectrum: [
+          Colors.white,
+          Colors.red.shade100,
+          Colors.red.shade300,
+          Colors.red.shade500,
+          Colors.red.shade700,
+          Colors.red.shade900,
+        ], //cold to hot
+        rangeStart: 32,
+        rangeEnd: maxTemp,
+      );
+    }
+
+    var rbColorPrecip = Rainbow(
+      //static range showing precip
+      spectrum: [
+        Colors.white,
+        Colors.blue.shade100,
+        Colors.blue.shade200,
+        Colors.blue.shade300,
+        Colors.blue.shade400,
+        Colors.blue.shade500,
+        Colors.blue.shade600,
+        Colors.blue.shade700,
+        Colors.blue.shade800,
+        Colors.blue.shade900,
+      ],
+      rangeStart: 0, //no rain
+      rangeEnd:
+          3, //max amount of rain expected in a 7-day period in in. Fine if broken
+    );
+
+    if (tempOrPrecip) {
+      return rbColorTemp[input];
+    } else {
+      return rbColorPrecip[input];
     }
   }
 
@@ -230,8 +344,8 @@ class _mapState extends State<map> {
                             width: 1)),
                       ),
                       onPressed: () => setState(() {
-                        Scaffold.of(context).openDrawer();
-                      }),
+                            Scaffold.of(context).openDrawer();
+                          }),
                       child: Center(
                         child: Text('Favorite Stations'),
                       )),
@@ -395,7 +509,7 @@ class _mapState extends State<map> {
                         ),
                         onPositionChanged: (position, hasGesture) {
                           if (hasGesture) {
-                            _updateMarkerSize(position.zoom);
+                            //_updateMarkerSize(position.zoom);
                           }
                         },
                       ),
