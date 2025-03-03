@@ -48,8 +48,8 @@ class StationMarker {
       lat: json['latitude'] as double,
       lon: json['longitude'] as double,
       air_temp: json['Air Temperature [°F]'] as double,
-      precipSummary: json['7-Day Precipitation [in]'],
-      date:  json['datetime'],
+      precipSummary: json['7-day Precipitation [in]'],
+      date: json['datetime'],
     );
   }
 }
@@ -58,13 +58,17 @@ class _mapState extends State<map> {
   late double _markerSize;
   late double maxTemp;
   late double minTemp;
+  late double maxPrecip;
   late bool showAggragateDataMarkers;
+  late bool showPrecipAggragateDataMarker;
+
+  int markerindex = 0;
 
   late MapController mapController;
   late Icon hydrometStations;
   late Icon agrimetStations;
   GeoJsonParser myGeoJson =
-      GeoJsonParser(defaultPolygonBorderColor: Colors.black26);
+      GeoJsonParser(defaultPolygonBorderColor: Colors.black45);
   bool showHydroMet = true;
 
   //Defaults are set in initState
@@ -92,8 +96,10 @@ class _mapState extends State<map> {
 
     maxTemp = -999.99; //force these to change when called by findRange
     minTemp = 999.99; //need to init to avoid error
+    maxPrecip = 0;
 
     showAggragateDataMarkers = true;
+    showPrecipAggragateDataMarker = true;
   }
 
   @override
@@ -135,8 +141,11 @@ class _mapState extends State<map> {
             },
             child: Icon(
               Icons.circle_sharp,
-              color: showAggragateDataMarkers
-                  ? setMarkerColor(station.air_temp!, true)  //change tempOrPrecip bool here
+              color: showAggragateDataMarkers //show temp or precip data
+                  ? showPrecipAggragateDataMarker
+                      ? setMarkerColor(station.precipSummary!, false)
+                      : setMarkerColor(
+                          station.air_temp!, true) //show precip data
                   : Color.fromARGB(255, 14, 70, 116),
               size: _markerSize,
             ),
@@ -159,8 +168,9 @@ class _mapState extends State<map> {
             },
             child: Icon(
               Icons.star,
-              color: showAggragateDataMarkers? setMarkerColor(station.air_temp!, true)
-              : Color.fromARGB(255, 46, 155, 18),
+              color: showAggragateDataMarkers
+                  ? setMarkerColor(station.air_temp!, true)
+                  : Color.fromARGB(255, 46, 155, 18),
               size: _markerSize,
             ),
           ),
@@ -236,7 +246,7 @@ class _mapState extends State<map> {
     }
   }
 
-    bool isCurrentDate(int dateFromData) {
+  bool isCurrentDate(int dateFromData) {
     DateTime now = DateTime.now();
     DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData);
 
@@ -246,12 +256,22 @@ class _mapState extends State<map> {
   }
 
   void findRange(List<StationMarker> stationList) {
-
     minTemp = 999.00;
     maxTemp = -999.00;
+    maxPrecip = -1;
     //set global variables. Call from get markers
     for (StationMarker station in stationList) {
-      if (station.air_temp! > maxTemp && station.air_temp != 999.0&& station.subNetwork == 'HydroMet' && isCurrentDate(station.date!)) {
+      if (station.air_temp == null || station.air_temp == 999.00) {
+        continue;
+      }
+
+      if (station.precipSummary == null || station.precipSummary == 999.00) {
+        continue;
+      }
+
+      if (station.air_temp! > maxTemp &&
+          station.subNetwork == 'HydroMet' &&
+          isCurrentDate(station.date!)) {
         //check max temp
         maxTemp = station.air_temp!;
       }
@@ -260,10 +280,13 @@ class _mapState extends State<map> {
         //check min temp
         minTemp = station.air_temp!;
       }
+
+      if (station.precipSummary! > maxPrecip &&
+          station.subNetwork == 'HydroMet') {
+        //check precip
+        maxPrecip = station.precipSummary!;
+      }
     }
-
-    print('maxTemp: $maxTemp , minTemp: $minTemp');
-
   }
 
   Color setMarkerColor(double input, bool tempOrPrecip) {
@@ -282,7 +305,7 @@ class _mapState extends State<map> {
         ], //cold to hot
         rangeStart:
             minTemp, //min and max set in findRange() func called in getMarkers
-        rangeEnd: maxTemp,
+        rangeEnd: (maxTemp < 32) ? maxTemp : 32,
       );
     } else {
       rbColorTemp = Rainbow(
@@ -294,7 +317,7 @@ class _mapState extends State<map> {
           Colors.red.shade700,
           Colors.red.shade900,
         ], //cold to hot
-        rangeStart: 32,
+        rangeStart: (minTemp > 32) ? minTemp : 32,
         rangeEnd: maxTemp,
       );
     }
@@ -315,13 +338,39 @@ class _mapState extends State<map> {
       ],
       rangeStart: 0, //no rain
       rangeEnd:
-          3, //max amount of rain expected in a 7-day period in in. Fine if broken
+          maxPrecip, //max amount of rain expected in a 7-day period in in. Fine if broken
     );
 
     if (tempOrPrecip) {
       return rbColorTemp[input];
     } else {
       return rbColorPrecip[input];
+    }
+  }
+
+  IconData FABReturnIcon(int index) {
+    //0 = temp, 1 = normal, 2 = precip
+    if (index == 0) {
+      setState(() {
+        showAggragateDataMarkers = true;
+        showPrecipAggragateDataMarker = false;
+      });
+
+      return Icons.thermostat;
+    } else if (index == 1) {
+      setState(() {
+        showAggragateDataMarkers = false;
+        showPrecipAggragateDataMarker = false;
+      });
+
+      return Icons.circle;
+    } else {
+      setState(() {
+        showAggragateDataMarkers = true;
+        showPrecipAggragateDataMarker = true;
+      });
+
+      return Icons.water_drop;
     }
   }
 
@@ -332,55 +381,42 @@ class _mapState extends State<map> {
       child: SafeArea(
         top: true,
         child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                markerindex += 1;
+                if (showHydroMet) {
+                  markerindex = markerindex % 3;
+                } else {
+                  markerindex = markerindex % 2;
+                }
+              });
+            },
+            child: Icon(FABReturnIcon(markerindex)),
+          ),
           appBar: AppBar(
             leading: Builder(
               builder: (context) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        side: WidgetStateProperty.all(BorderSide(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: 1)),
-                      ),
-                      onPressed: () => setState(() {
-                            Scaffold.of(context).openDrawer();
-                          }),
-                      child: Center(
-                        child: Text('Favorite Stations'),
-                      )),
-                );
-              },
+                return IconButton(
+                  onPressed: (){
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon: Icon(Icons.star));
+              }
             ),
-            title: Image.asset(
-              'lib/assets/MCO_logo.png',
-              width: 120,
-              height: 70,
-              fit: BoxFit.contain,
-            ),
+
             backgroundColor: Theme.of(context).colorScheme.primary,
-            actions: [
-              Builder(
-                builder: (context) {
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        side: WidgetStateProperty.all(BorderSide(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: 1)),
-                      ),
-                      onPressed: () => Scaffold.of(context).openEndDrawer(),
-                      child: InkWell(
-                        splashColor: Theme.of(context).colorScheme.error,
-                        onTap: () => Scaffold.of(context).openEndDrawer(),
-                        child: Text('Station List'),
-                      ),
-                    ),
-                  );
-                },
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            elevation: 5,
+            centerTitle: true,
+            title: Center(
+              child: Image.asset(
+                'lib/assets/MCO_logo.png',
+                fit: BoxFit.fill,
+                height: 50,
               ),
-            ],
+            ),
           ),
           drawer: Drawer(
             child: FutureBuilder(
@@ -521,9 +557,13 @@ class _mapState extends State<map> {
                         ),
                         PolygonLayer(polygons: myGeoJson.polygons),
                         MarkerLayer(markers: snapshot.data as List<Marker>),
-                        SimpleAttributionWidget(
-                          backgroundColor: Colors.transparent,
-                          source: Text('OpenStreetMap contributors'),
+                        Positioned(
+                          bottom: 10,
+                          left: 10,
+                          child: SimpleAttributionWidget(
+                            backgroundColor: Colors.transparent,
+                            source: Text('OpenStreetMap contributors'),
+                          ),
                         ),
                       ],
                     );
@@ -550,6 +590,18 @@ class _mapState extends State<map> {
                   inactiveTrackColor: agrimetStations.color,
                 ),
               ),
+
+              Positioned(
+                top: 10,
+                left: 10,
+                child: SizedBox(
+                  width: MediaQuery.sizeOf(context).width-20,
+                  height: 10,
+                  child: Container(
+                    ),
+                  ),
+                ),
+
             ],
           ),
         ),
