@@ -26,7 +26,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
     //set _pages list here to pass station Id to them with constructor injection
     setPages(widget.station.id, widget.hydroBool);
     WidgetsBinding.instance.addPostFrameCallback((_) => checkIfFavorite());
-    
+
     super.initState();
     remove = false;
   }
@@ -88,7 +88,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
     super.dispose();
   }
 
-  void checkIfFavorite() async{
+  void checkIfFavorite() async {
     final prefs = await SharedPreferences.getInstance();
     final String? favoritesString = prefs.getString('favorites');
     Map<String, dynamic> favoritesJson;
@@ -99,16 +99,15 @@ class _HydroStationPageState extends State<HydroStationPage> {
       favoritesJson = {'stations': []};
     }
 
-    
-
-  //  print('Full Map: ${favoritesJson['stations'][0]}');
+    //  print('Full Map: ${favoritesJson['stations'][0]}');
     for (int i = 0; i < favoritesJson['stations'].length; i++) {
       favoritesJson['stations'][i].forEach((key, value) {
         //check for id in all stations
         if (value == widget.station.id) {
           remove = true;
-      }});
-    } 
+        }
+      });
+    }
   }
 
   //Create favorites json for shared preferences
@@ -137,7 +136,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
         'sub_network': widget.station.subNetwork,
         'lat': widget.station.lat,
         'lon': widget.station.lon,
-        'air_temp' : widget.station.air_temp,
+        'air_temp': widget.station.air_temp,
         'precipSummary': widget.station.precipSummary,
       });
     }
@@ -145,7 +144,6 @@ class _HydroStationPageState extends State<HydroStationPage> {
     setState(() {
       prefs.setString('favorites', jsonEncode(favoritesJson));
     });
-    
   }
 
   int _activePage = 1;
@@ -156,9 +154,12 @@ class _HydroStationPageState extends State<HydroStationPage> {
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: Icon(Icons.star,
-              color: remove ?Colors.yellow
-              :Theme.of(context).colorScheme.onPrimary,),
+              icon: Icon(
+                Icons.star,
+                color: remove
+                    ? Colors.yellow
+                    : Theme.of(context).colorScheme.onPrimary,
+              ),
               onPressed: () {
                 createFavoritesJson(); //saving to favorites
               },
