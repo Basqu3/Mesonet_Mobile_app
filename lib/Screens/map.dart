@@ -173,6 +173,8 @@ class _mapState extends State<map> {
                   : Color.fromARGB(255, 46, 155, 18),
               size: _markerSize,
             ),
+
+          
           ),
         ));
       }
