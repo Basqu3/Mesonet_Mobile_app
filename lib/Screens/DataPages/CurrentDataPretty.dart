@@ -292,23 +292,20 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                             isHydromet: widget.isHydromet,
                                           ),
                                           Positioned(
-                                            right: 40,
-                                            top: 300,
                                             bottom: 10,
+                                            
                                             child: FadeTransition(
-                                              opacity:
-                                                  Tween(begin: 1.0, end: 0.0)
-                                                      .animate(
-                                                CurvedAnimation(
-                                                  parent: _animationController,
-                                                  curve: Interval(0.2, 1.0,
-                                                      curve:
-                                                          Curves.easeOutBack),
-                                                ),
-                                              ),
-                                              child: Icon(Icons.arrow_downward,
-                                                  color: Colors.white),
-                                            ),
+                                        opacity:
+                                            Tween(begin: 1.0, end: 0.0).animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
+                                          ),
+                                        ),
+                                        child: Icon(Icons.arrow_downward,
+                                            color: Colors.white),
+                                      ),
                                           ),
                                         ]),
                                       ),

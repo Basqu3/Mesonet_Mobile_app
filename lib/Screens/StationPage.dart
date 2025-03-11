@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
+import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
@@ -23,17 +24,13 @@ class _HydroStationPageState extends State<HydroStationPage> {
 
   @override
   void initState() {
+    remove = false;
     //set _pages list here to pass station Id to them with constructor injection
     setPages(widget.station.id, widget.hydroBool);
     WidgetsBinding.instance.addPostFrameCallback((_) => checkIfFavorite());
 
     super.initState();
-    remove = false;
   }
-
-/*NOTE: Below sets the pages for onTap of station markers
-    They are seperated by agri and hydromets. Add as required
-    Swipe functions and marker are generated */
 
   void setPages(String id, int hydroBool) {
     //setting pages for viewing agrimet
@@ -44,6 +41,10 @@ class _HydroStationPageState extends State<HydroStationPage> {
           lng: widget.station.lon,
           isHydromet: true,
         ), //setting pages
+        Currentdata(
+          id: id,
+          isHydromet: true,
+        ),
         CurrentDataPretty(
             id: id,
             lat: widget.station.lat,
@@ -62,6 +63,10 @@ class _HydroStationPageState extends State<HydroStationPage> {
           lng: widget.station.lon,
           isHydromet: false,
         ),
+        Currentdata(
+          id: id,
+          isHydromet: false,
+        ),
         CurrentDataPretty(
           id: id,
           lat: widget.station.lat,
@@ -78,7 +83,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
 
   final _pageController = PageController(
     initialPage:
-        1, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
+        2, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
     viewportFraction: 1,
   );
 
@@ -99,12 +104,13 @@ class _HydroStationPageState extends State<HydroStationPage> {
       favoritesJson = {'stations': []};
     }
 
-    //  print('Full Map: ${favoritesJson['stations'][0]}');
     for (int i = 0; i < favoritesJson['stations'].length; i++) {
       favoritesJson['stations'][i].forEach((key, value) {
         //check for id in all stations
         if (value == widget.station.id) {
-          remove = true;
+          setState(() {
+            remove = true;
+          });
         }
       });
     }
@@ -122,8 +128,6 @@ class _HydroStationPageState extends State<HydroStationPage> {
     } else {
       favoritesJson = {'stations': []};
     }
-
-    checkIfFavorite();
 
     if (remove) {
       favoritesJson['stations'].removeWhere((element) =>
@@ -143,10 +147,11 @@ class _HydroStationPageState extends State<HydroStationPage> {
 
     setState(() {
       prefs.setString('favorites', jsonEncode(favoritesJson));
+      remove = !remove;
     });
   }
 
-  int _activePage = 1;
+  int _activePage = 2;
 
   @override
   Widget build(BuildContext context) {

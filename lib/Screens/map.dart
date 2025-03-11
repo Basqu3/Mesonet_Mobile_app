@@ -213,7 +213,6 @@ class _mapState extends State<map> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonStringList = prefs.getString('favorites');
     Map<String, dynamic> jsonMAP = jsonDecode(jsonStringList!); //no null safe
-    //print(jsonMAP['stations'][0]['name']);
     List<StationMarker> jsonStationList = [];
     for (int i = 0; i < (jsonMAP['stations'].length); i++) {
       jsonStationList.add(StationMarker(
@@ -227,9 +226,7 @@ class _mapState extends State<map> {
         date: jsonMAP['stations'][i]['date'],
       ));
     }
-    // setState(() {
-
-    // });
+    setState(() {}); // Call setState once after the loop
     return jsonStationList;
   }
 
@@ -595,10 +592,16 @@ class _mapState extends State<map> {
                 top: 10,
                 left: 10,
                 child: SizedBox(
-                  width: MediaQuery.sizeOf(context).width-20,
-                  height: 10,
-                  child: Container(
+                  width: 180,
+                  height: 30,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
+                    color: Theme.of(context).colorScheme.primary,
+                    child: Padding(padding: EdgeInsets.all(5),
+                    child: Column(),),
+                  )
                   ),
                 ),
 
