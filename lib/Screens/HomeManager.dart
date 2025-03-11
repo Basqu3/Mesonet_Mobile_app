@@ -62,8 +62,9 @@ class _aboutState extends State<about> {
     super.initState();
     controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse('https://climate.umt.edu/about/'));
+    ..loadRequest(Uri.parse('https://climate.umt.edu/about/?theme=dark'));
   }
+  
 
   @override
   void dispose() {
@@ -73,6 +74,7 @@ class _aboutState extends State<about> {
 
   @override
   Widget build(BuildContext context) {
+    
     return SafeArea(child: WebViewWidget(controller: controller));
   }
 }

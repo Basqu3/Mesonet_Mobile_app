@@ -143,12 +143,14 @@ class _mapState extends State<map> {
             },
             child: Icon(
               Icons.circle_sharp,
-              color: showAggragateDataMarkers //show temp or precip data
-                  ? showPrecipAggragateDataMarker
-                      ? setMarkerColor(station.precipSummary!, false)
-                      : setMarkerColor(
-                          station.air_temp!, true) //show precip data
-                  : Color.fromARGB(255, 14, 70, 116),
+              color: isCurrentDate(station.date!) //is current date
+                  ? showAggragateDataMarkers //show temp or precip data
+                      ? showPrecipAggragateDataMarker
+                          ? setMarkerColor(station.precipSummary!, false)
+                          : setMarkerColor(
+                              station.air_temp!, true) //show precip data
+                      : Color.fromARGB(255, 14, 70, 116)
+                  : Colors.black54,
               size: _markerSize,
             ),
           ),
@@ -212,7 +214,7 @@ class _mapState extends State<map> {
     return markers;
   }
 
-  Future<List<StationMarker>> returnStations () async{
+  Future<List<StationMarker>> returnStations() async {
     return stationList;
   }
 
@@ -280,13 +282,14 @@ class _mapState extends State<map> {
         maxTemp = station.air_temp!;
       }
 
-      if (station.air_temp! < minTemp && station.subNetwork == 'HydroMet') {
+      if (station.air_temp! < minTemp && station.subNetwork == 'HydroMet'&&isCurrentDate(station.date!)) {
         //check min temp
         minTemp = station.air_temp!;
       }
 
       if (station.precipSummary! > maxPrecip &&
-          station.subNetwork == 'HydroMet') {
+          station.subNetwork == 'HydroMet' &&
+          isCurrentDate(station.date!)) {
         //check precip
         maxPrecip = station.precipSummary!;
       }
@@ -400,25 +403,27 @@ class _mapState extends State<map> {
             child: Icon(FABReturnIcon(markerindex)),
           ),
           appBar: AppBar(
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                  onPressed: (){
+            leading: Builder(builder: (context) {
+              return IconButton(
+                  onPressed: () {
                     Scaffold.of(context).openDrawer();
                   },
                   icon: Icon(Icons.star));
-              }
-            ),
-
+            }),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            elevation: 5,
             centerTitle: true,
             title: Center(
-              child: Image.asset(
-                'lib/assets/MCO_logo.png',
-                fit: BoxFit.fill,
-                height: 50,
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Image.asset(
+                    'lib/assets/MCO_logo.png',
+                    fit: BoxFit.fill,
+                    height: 50,
+                  ),
+                ),
               ),
             ),
           ),
@@ -562,7 +567,7 @@ class _mapState extends State<map> {
                         PolygonLayer(polygons: myGeoJson.polygons),
                         MarkerLayer(markers: snapshot.data as List<Marker>),
                         Positioned(
-                          bottom: 10,
+                          bottom: 0,
                           left: 10,
                           child: SimpleAttributionWidget(
                             backgroundColor: Colors.transparent,
@@ -594,60 +599,88 @@ class _mapState extends State<map> {
                   inactiveTrackColor: agrimetStations.color,
                 ),
               ),
-              
               showAggragateDataMarkers
-              ? Positioned(
-                top: 10,
-                left: 10,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  color: Colors.transparent,
-                  child: Padding(padding: EdgeInsets.all(5),
-                  child: IntrinsicWidth(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(showPrecipAggragateDataMarker
-                            ? 'Precipitation'
-                            : 'Temperature'),
-                        Row(
-                          children: [
-                            Container(
-                              width: 320,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.red.shade900,
-                                    Colors.blue.shade900,
-                                  ])
-                              ),
-                            )
-                          ],
+                  ? Positioned(
+                      bottom: 15,
+                      left: 10,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: showPrecipAggragateDataMarker
-                          ? [
-                            Text ('0'),
-                            Text ('$maxPrecip in'),
-                          ]
-                          : [
-                            Text('Min Temp: $minTemp'),
-                            Text('0'),
-                            Text('Max Temp: $maxTemp'),
-                          ]
-                        )
-                      ],
-                    ),
-                  ),),
-                ),
-                )
-                : Container()
-
+                        color: Colors.white38,
+                        child: Padding(
+                          padding: EdgeInsets.all(5),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(showPrecipAggragateDataMarker
+                                    ? '14 Day Precipitation'
+                                    : 'Temperature'),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: 305,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                        colors: !showPrecipAggragateDataMarker
+                                            ? [
+                                                setMarkerColor(minTemp, true),
+                                                setMarkerColor(32, true),
+                                                setMarkerColor(maxTemp, true)
+                                              ]
+                                            : [
+                                                Colors.white,
+                                                setMarkerColor(
+                                                    maxPrecip, false),
+                                              ],
+                                      )),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children:
+                                              showPrecipAggragateDataMarker
+                                                  ? [
+                                                      Text('0'),
+                                                      Text(
+                                                        '$maxPrecip in',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ]
+                                                  : [
+                                                      Text(
+                                                        '${minTemp.toStringAsFixed(0)}°F',
+                                                        style: TextStyle(
+                                                            color: (minTemp >= 32)
+                                                                ? Colors.black
+                                                                : Colors.white),
+                                                      ),
+                                                      !(minTemp >= 32)
+                                                          ? Text('32°F')
+                                                          : Text(''),
+                                                      Text(
+                                                          '${maxTemp.toStringAsFixed(0)}°F'),
+                                                    ]),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container()
             ],
           ),
         ),
