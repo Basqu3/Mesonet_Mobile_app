@@ -42,10 +42,8 @@ class _soil_profilesState extends State<soil_profiles> {
       rbColorTemp = Rainbow(
         spectrum: [
           Colors.blue.shade900,
-          Colors.blue.shade700,
-          Colors.blue.shade500,
-          Colors.blue.shade300,
-          Colors.blue.shade100,
+          Color.fromARGB(255,43,140,190),
+          Color.fromARGB(255,189,201,225),
           Colors.white,
         ], //cold to hot
         rangeStart: getTempRange()[1],
@@ -54,12 +52,9 @@ class _soil_profilesState extends State<soil_profiles> {
     } else {
       rbColorTemp = Rainbow(
         spectrum: [
-          Colors.white,
-          Colors.red.shade100,
-          Colors.red.shade300,
-          Colors.red.shade500,
-          Colors.red.shade700,
-          Colors.red.shade900,
+          Color.fromARGB(255, 255, 255, 120),
+          Color.fromARGB(255, 253,141,60),
+          Color.fromARGB(255, 240,59,32),
         ], //cold to hot
         rangeStart: getTempRange()[1],
         rangeEnd: getTempRange()[0],
@@ -72,13 +67,12 @@ class _soil_profilesState extends State<soil_profiles> {
     /// The `rbColorVWC` variable is used to create a rainbow color gradient for the VWC data.
     var rbColorVWC = Rainbow(
       spectrum: [
-        Colors.brown,
-        Colors.orange,
-        Colors.yellow,
-        Colors.green,
-        Colors.teal,
-        Colors.cyan,
-        Colors.blue,
+        Color.fromARGB(255, 166, 96, 26),
+        Color.fromARGB(255,223,194,125),
+        Color.fromARGB(255,245,245,245),
+        Color.fromARGB(255, 106, 219, 135),
+        Color.fromARGB(255, 1, 133, 113),
+
       ], //cold to hot
       rangeStart: 0,  
       rangeEnd: 50,

@@ -606,6 +606,11 @@ class _mapState extends State<map> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
+                        //   side: BorderSide(  //adds black border to card
+                        //   color:
+                        //       Theme.of(context).colorScheme.onPrimaryContainer,
+                        //   width: 1.0,
+                        // )
                         ),
                         color: Colors.white38,
                         child: Padding(
