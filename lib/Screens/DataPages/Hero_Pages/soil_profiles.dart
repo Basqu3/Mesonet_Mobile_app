@@ -68,7 +68,7 @@ class _soil_profilesState extends State<soil_profiles> {
 
     /// This class represents the soil profiles page in the application.
     /// It utilizes a rainbow color scheme for visualizing volumetric water content (VWC).
-    ///
+    /// Will be modified to show percent saturation once available for all stations.
     /// The `rbColorVWC` variable is used to create a rainbow color gradient for the VWC data.
     var rbColorVWC = Rainbow(
       spectrum: [
@@ -80,7 +80,7 @@ class _soil_profilesState extends State<soil_profiles> {
         Colors.cyan,
         Colors.blue,
       ], //cold to hot
-      rangeStart: 0,
+      rangeStart: 0,  
       rangeEnd: 50,
     );
 

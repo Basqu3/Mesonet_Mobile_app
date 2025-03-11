@@ -51,7 +51,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                 textAlign: TextAlign.center,
               ),
             ),
-            duration: const Duration(seconds: 7),
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -231,11 +231,12 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                         ),
                       ),
                       Flexible(
-                        flex: 4,
-                        child: Row(
+                        flex: 5,
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: Column(
+                            Flexible(
+                              flex: 2,
+                              child: Row(
                                 children: [
                                   Flexible(
                                     flex: 1,
@@ -265,35 +266,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                     ),
                                   ),
                                   Flexible(
-                                    flex: 3,
-                                    child: Card(
-                                        color: widget.isHydromet
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            side: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryContainer,
-                                              width: 1.0,
-                                            )),
-                                        child: Placeholder()),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Flexible(
-                              flex: 1,
-                              child: Column(
-                                children: [
-                                  Flexible(
-                                    flex: 4,
+                                    flex: 1,
                                     child: Card(
                                       color: widget.isHydromet
                                           ? Theme.of(context)
@@ -341,66 +314,60 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       ),
                                     ),
                                   ),
-                                  Flexible(
-                                    flex: 2,
-                                    child: Card(
-                                      color: widget.isHydromet
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          side: BorderSide(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimaryContainer,
-                                            width: 1.0,
-                                          )),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: AspectRatio(
-                                              aspectRatio: 1 / 1,
-                                              child: Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  Image.asset(
-                                                    'lib/assets/cadrant.png',
-                                                  ),
-                                                  Transform.rotate(
-                                                    angle: snapshot
-                                                            .data!.windDirection
-                                                        as double,
-                                                    child: Image.asset(
-                                                      'lib/assets/compass.png',
-                                                      scale: 2.5,
-                                                    ),
-                                                  )
-                                                ],
+                                ],
+                              ),
+                            ),
+                            Flexible(
+                              flex: 3,
+                              child: Card(
+                                color: widget.isHydromet
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.secondary,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                      width: 1.0,
+                                    )),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: AspectRatio(
+                                        aspectRatio: 1 / 1,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'lib/assets/cadrant.png',
+                                            ),
+                                            Transform.rotate(
+                                              angle: snapshot
+                                                      .data!.windDirection
+                                                  as double,
+                                              child: Image.asset(
+                                                'lib/assets/compass.png',
+                                                scale: 2.5,
                                               ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                              child: Center(
-                                            child: Text(
-                                              '${snapshot.data!.windSpeed!.toString()} Mi/hr',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ))
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Expanded(
+                                        child: Center(
+                                      child: Text(
+                                        '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ))
+                                  ],
+                                ),
                               ),
                             ),
                           ],
