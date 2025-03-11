@@ -61,6 +61,7 @@ class _mapState extends State<map> {
   late double maxPrecip;
   late bool showAggragateDataMarkers;
   late bool showPrecipAggragateDataMarker;
+  late List<StationMarker> stationList;
 
   int markerindex = 0;
 
@@ -75,8 +76,9 @@ class _mapState extends State<map> {
   @override
   void initState() {
     super.initState();
+    stationList = [];
     WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
-
+    WidgetsBinding.instance.addPostFrameCallback((_) => getStations());
     mapController = MapController();
     _markerSize = 16.0; // Default marker size
 
@@ -183,6 +185,7 @@ class _mapState extends State<map> {
   Future<List<StationMarker>> getStations() async {
     String url = 'https://mesonet.climate.umt.edu/api/v2/app/?type=json';
     String response = '';
+    print('hit');
     try {
       response = await compute(apiCall, url);
     } catch (e) {
@@ -191,9 +194,10 @@ class _mapState extends State<map> {
       }
     }
 
-    final List<StationMarker> stationList =
+    final List<StationMarker> stationListTemp =
         await compute(parseToStationMarkers, response);
-    return stationList;
+    stationList = stationListTemp;
+    return stationListTemp;
   }
 
   void loadPolygons() async {
@@ -202,11 +206,14 @@ class _mapState extends State<map> {
   }
 
   Future<List<Marker>> getMarkers() async {
-    List<StationMarker> stationList = await getStations();
     findRange(stationList); //setting max and min for markerColor
     List<Marker> markers = parseToMarkers(stationList);
     //List<Marker> markers = await compute(parseToMarkers, stationList);
     return markers;
+  }
+
+  Future<List<StationMarker>> returnStations () async{
+    return stationList;
   }
 
   Future<List<StationMarker>> getFavoriteStationList() async {
@@ -470,7 +477,7 @@ class _mapState extends State<map> {
           ),
           endDrawer: Drawer(
             child: FutureBuilder(
-              future: getStations(),
+              future: returnStations(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(
