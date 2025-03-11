@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_001/Screens/map.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeManager extends StatefulWidget {
   const HomeManager({super.key});
@@ -46,12 +47,33 @@ final List _screens = [
   }
 }
 
-class about extends StatelessWidget {
+class about extends StatefulWidget {
   const about({super.key});
 
   @override
+  State<about> createState() => _aboutState();
+}
+
+class _aboutState extends State<about> {
+
+  late WebViewController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(Uri.parse('https://climate.umt.edu/about/'));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SafeArea(child: WebViewWidget(controller: controller));
   }
 }
 

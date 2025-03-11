@@ -181,22 +181,30 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Flexible(
-                            child: Text(
-                          'Air Temperature: ${snapshot.data!.airTemperature.toString()}[°F]',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  Theme.of(context).colorScheme.onPrimaryFixed),
+                            child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            'Air Temperature: ${snapshot.data!.airTemperature.toString()}[°F]',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryFixed),
+                          ),
                         )),
                         Flexible(
-                            child: Text(
-                          'Relative Humidity: ${snapshot.data!.relativeHumidity.toString()}[%]',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  Theme.of(context).colorScheme.onPrimaryFixed),
+                            child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            'Relative Humidity: ${snapshot.data!.relativeHumidity.toString()}[%]',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryFixed),
+                          ),
                         )),
                       ],
                     ),
@@ -293,19 +301,20 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                           ),
                                           Positioned(
                                             bottom: 10,
-                                            
                                             child: FadeTransition(
-                                        opacity:
-                                            Tween(begin: 1.0, end: 0.0).animate(
-                                          CurvedAnimation(
-                                            parent: _animationController,
-                                            curve: Interval(0.3, 1.0,
-                                                curve: Curves.easeOutBack),
-                                          ),
-                                        ),
-                                        child: Icon(Icons.arrow_downward,
-                                            color: Colors.white),
-                                      ),
+                                              opacity:
+                                                  Tween(begin: 1.0, end: 0.0)
+                                                      .animate(
+                                                CurvedAnimation(
+                                                  parent: _animationController,
+                                                  curve: Interval(0.3, 1.0,
+                                                      curve:
+                                                          Curves.easeOutBack),
+                                                ),
+                                              ),
+                                              child: Icon(Icons.arrow_downward,
+                                                  color: Colors.white),
+                                            ),
                                           ),
                                         ]),
                                       ),
@@ -333,7 +342,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(5.0),
+                                      padding: const EdgeInsets.all(8.0),
                                       child: AspectRatio(
                                         aspectRatio: 1 / 1,
                                         child: Stack(
@@ -343,12 +352,11 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                               'lib/assets/cadrant.png',
                                             ),
                                             Transform.rotate(
-                                              angle: snapshot
-                                                      .data!.windDirection
-                                                  as double,
+                                              angle: snapshot.data!
+                                                  .windDirection as double,
                                               child: Image.asset(
                                                 'lib/assets/compass.png',
-                                                scale: 2.5,
+                                                scale: 2.0,
                                               ),
                                             )
                                           ],

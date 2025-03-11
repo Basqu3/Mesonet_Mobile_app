@@ -594,23 +594,59 @@ class _mapState extends State<map> {
                   inactiveTrackColor: agrimetStations.color,
                 ),
               ),
-
-              Positioned(
+              
+              showAggragateDataMarkers
+              ? Positioned(
                 top: 10,
                 left: 10,
-                child: SizedBox(
-                  width: 180,
-                  height: 30,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    child: Padding(padding: EdgeInsets.all(5),
-                    child: Column(),),
-                  )
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
+                  color: Colors.transparent,
+                  child: Padding(padding: EdgeInsets.all(5),
+                  child: IntrinsicWidth(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(showPrecipAggragateDataMarker
+                            ? 'Precipitation'
+                            : 'Temperature'),
+                        Row(
+                          children: [
+                            Container(
+                              width: 320,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.red.shade900,
+                                    Colors.blue.shade900,
+                                  ])
+                              ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: showPrecipAggragateDataMarker
+                          ? [
+                            Text ('0'),
+                            Text ('$maxPrecip in'),
+                          ]
+                          : [
+                            Text('Min Temp: $minTemp'),
+                            Text('0'),
+                            Text('Max Temp: $maxTemp'),
+                          ]
+                        )
+                      ],
+                    ),
+                  ),),
                 ),
+                )
+                : Container()
 
             ],
           ),
