@@ -11,44 +11,42 @@ class HomeManager extends StatefulWidget {
 
 class _HomeManagerState extends State<HomeManager> {
   int _currentIndex = 1;
-final List _screens = [
-  const feedback(),
-  map(),
-  const about(),
-];
+  final List _screens = [
+    const feedback(),
+    map(),
+    const about(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
-        
-        currentIndex: _currentIndex,
-        onTap: (index){
-          setState(() {
-            _currentIndex=index;
-          });
-        },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer,),
-            label: 'Feedback',
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.question_answer,
+              ),
+              label: 'Feedback',
             ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: "Map",
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: "Map",
             ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note),
-            label: "About",
+            BottomNavigationBarItem(
+              icon: Icon(Icons.note),
+              label: "About",
             ),
-        ]
-      ),
+          ]),
     );
   }
 }
@@ -61,16 +59,21 @@ class about extends StatefulWidget {
 }
 
 class _aboutState extends State<about> {
-
   late WebViewController controller;
   @override
   void initState() {
     super.initState();
     controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse('https://climate.umt.edu/about/?theme=dark'));
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse('https://climate.umt.edu/about/?theme=dark'));
+
+    NavigationDelegate(onNavigationRequest: (NavigationRequest request) {
+      if (request.url.startsWith('https://airtable.com')) {
+        return NavigationDecision.navigate;
+      }
+      return NavigationDecision.prevent;
+    });
   }
-  
 
   @override
   void dispose() {
@@ -80,12 +83,12 @@ class _aboutState extends State<about> {
 
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(child: WebViewWidget(controller: controller));
   }
 }
 
-class feedback extends StatefulWidget {  //https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form
+class feedback extends StatefulWidget {
+  //https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form
   const feedback({super.key});
 
   @override
@@ -93,13 +96,23 @@ class feedback extends StatefulWidget {  //https://airtable.com/appUacO5Pq7wZYoJ
 }
 
 class _feedbackState extends State<feedback> {
-   late WebViewController controller;
+  late WebViewController controller;
+
   @override
   void initState() {
     super.initState();
     controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse('https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form'));
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(
+          'https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form'));
+    NavigationDelegate(
+      onNavigationRequest: (NavigationRequest request) {
+        if (request.url.startsWith('https://airtable.com')) {
+          return NavigationDecision.navigate;
+        }
+        return NavigationDecision.prevent;
+      },
+    );
   }
 
   @override
@@ -110,6 +123,9 @@ class _feedbackState extends State<feedback> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: WebViewWidget(controller: controller));
+    return SafeArea(
+        child: WebViewWidget(
+      controller: controller,
+    ));
   }
 }
