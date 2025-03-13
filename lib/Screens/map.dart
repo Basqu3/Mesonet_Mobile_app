@@ -282,7 +282,9 @@ class _mapState extends State<map> {
         maxTemp = station.air_temp!;
       }
 
-      if (station.air_temp! < minTemp && station.subNetwork == 'HydroMet'&&isCurrentDate(station.date!)) {
+      if (station.air_temp! < minTemp &&
+          station.subNetwork == 'HydroMet' &&
+          isCurrentDate(station.date!)) {
         //check min temp
         minTemp = station.air_temp!;
       }
@@ -304,10 +306,8 @@ class _mapState extends State<map> {
       rbColorTemp = Rainbow(
         spectrum: [
           Colors.blue.shade900,
-          Colors.blue.shade700,
-          Colors.blue.shade500,
-          Colors.blue.shade300,
-          Colors.blue.shade100,
+          Color.fromARGB(255, 43, 140, 190),
+          Color.fromARGB(255, 189, 201, 225),
           Colors.white,
         ], //cold to hot
         rangeStart:
@@ -317,12 +317,9 @@ class _mapState extends State<map> {
     } else {
       rbColorTemp = Rainbow(
         spectrum: [
-          Colors.white,
-          Colors.red.shade100,
-          Colors.red.shade300,
-          Colors.red.shade500,
-          Colors.red.shade700,
-          Colors.red.shade900,
+          Color.fromARGB(255, 255, 255, 120),
+          Color.fromARGB(255, 253, 141, 60),
+          Color.fromARGB(255, 240, 59, 32),
         ], //cold to hot
         rangeStart: (minTemp > 32) ? minTemp : 32,
         rangeEnd: maxTemp,
@@ -332,16 +329,10 @@ class _mapState extends State<map> {
     var rbColorPrecip = Rainbow(
       //static range showing precip
       spectrum: [
-        Colors.white,
-        Colors.blue.shade100,
-        Colors.blue.shade200,
-        Colors.blue.shade300,
-        Colors.blue.shade400,
-        Colors.blue.shade500,
-        Colors.blue.shade600,
-        Colors.blue.shade700,
-        Colors.blue.shade800,
-        Colors.blue.shade900,
+        Color.fromARGB(255, 105, 61, 16),
+        Color.fromARGB(255, 223, 194, 125),
+        Color.fromARGB(255, 106, 219, 135),
+        Color.fromARGB(255, 1, 133, 113),
       ],
       rangeStart: 0, //no rain
       rangeEnd:
@@ -583,109 +574,175 @@ class _mapState extends State<map> {
                   }
                 },
               ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Switch(
-                  value: showHydroMet,
-                  onChanged: (value) {
-                    setState(() {
-                      showHydroMet = value;
-                    });
-                  },
-                  activeColor: Theme.of(context).colorScheme.onPrimary,
-                  activeTrackColor: hydrometStations.color,
-                  inactiveThumbColor: Theme.of(context).colorScheme.onSecondary,
-                  inactiveTrackColor: agrimetStations.color,
-                ),
-              ),
-              showAggragateDataMarkers
-                  ? Positioned(
-                      bottom: 15,
-                      left: 10,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        //   side: BorderSide(  //adds black border to card
-                        //   color:
-                        //       Theme.of(context).colorScheme.onPrimaryContainer,
-                        //   width: 1.0,
-                        // )
-                        ),
-                        color: Colors.white38,
-                        child: Padding(
-                          padding: EdgeInsets.all(5),
-                          child: IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(showPrecipAggragateDataMarker
-                                    ? '14 Day Precipitation'
-                                    : 'Temperature'),
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: 305,
-                                      height: 18,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                        colors: !showPrecipAggragateDataMarker
-                                            ? [
-                                                setMarkerColor(minTemp, true),
-                                                setMarkerColor(32, true),
-                                                setMarkerColor(maxTemp, true)
-                                              ]
-                                            : [
-                                                Colors.white,
-                                                setMarkerColor(
-                                                    maxPrecip, false),
-                                              ],
-                                      )),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        showAggragateDataMarkers
+                            ? Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //   side: BorderSide(  //adds black border to card
+                                      //   color:
+                                      //       Theme.of(context).colorScheme.onPrimaryContainer,
+                                      //   width: 1.0,
+                                      // )
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                    color: Colors.white38,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: IntrinsicWidth(
+                                        child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children:
-                                              showPrecipAggragateDataMarker
-                                                  ? [
-                                                      Text('0'),
-                                                      Text(
-                                                        '$maxPrecip in',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ]
-                                                  : [
-                                                      Text(
-                                                        '${minTemp.toStringAsFixed(0)}°F',
-                                                        style: TextStyle(
-                                                            color: (minTemp >= 32)
-                                                                ? Colors.black
-                                                                : Colors.white),
-                                                      ),
-                                                      !(minTemp >= 32)
-                                                          ? Text('32°F')
-                                                          : Text(''),
-                                                      Text(
-                                                          '${maxTemp.toStringAsFixed(0)}°F'),
-                                                    ]),
-                                    )
-                                  ],
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(showPrecipAggragateDataMarker
+                                                ? '14 Day Precipitation'
+                                                : 'Temperature'),
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  height: 18,
+                                                  decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                    colors:
+                                                        !showPrecipAggragateDataMarker
+                                                            ? [
+                                                                setMarkerColor(
+                                                                    minTemp, true),
+                                                                !(minTemp >= 32 ||
+                                                                        maxTemp <=
+                                                                            32)
+                                                                    ? setMarkerColor(
+                                                                        31, true)
+                                                                    : setMarkerColor(
+                                                                        (2.25 *
+                                                                            (minTemp +
+                                                                                maxTemp) /
+                                                                            5),
+                                                                        true),
+                                                                !(minTemp >= 32 ||
+                                                                        maxTemp <=
+                                                                            32)
+                                                                    ? setMarkerColor(
+                                                                        33, true)
+                                                                    : setMarkerColor(
+                                                                        (2.75 *
+                                                                            (minTemp +
+                                                                                maxTemp) /
+                                                                            5),
+                                                                        true),
+                                                                setMarkerColor(
+                                                                    maxTemp, true)
+                                                              ]
+                                                            : [
+                                                                setMarkerColor(
+                                                                    0, false),
+                                                                setMarkerColor(
+                                                                    maxPrecip / 2,
+                                                                    false),
+                                                                setMarkerColor(
+                                                                    maxPrecip,
+                                                                    false),
+                                                              ],
+                                                  )),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 5),
+                                                  child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.end,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children:
+                                                          showPrecipAggragateDataMarker
+                                                              ? [
+                                                                  Text('0 in',
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .white)),
+                                                                  Text(
+                                                                    '$maxPrecip in',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ]
+                                                              : [
+                                                                  Text(
+                                                                    '${minTemp.toStringAsFixed(0)}°F',
+                                                                    style: TextStyle(
+                                                                        color: (minTemp >= 32)
+                                                                            ? Colors
+                                                                                .black
+                                                                            : Colors
+                                                                                .white),
+                                                                  ),
+                                                                  !(minTemp >=
+                                                                          32.00)
+                                                                      ? Text('32°F')
+                                                                      : Text(''),
+                                                                  Text(
+                                                                      '${maxTemp.toStringAsFixed(0)}°F'),
+                                                                ]),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ),
+                            )
+                            : Container(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5.0, bottom:6),
+                          child: Column(
+                            children: [
+                              Switch(
+                                value: showHydroMet,
+                                onChanged: (value) {
+                                  setState(() {
+                                    showPrecipAggragateDataMarker = false;
+                                    showHydroMet = value;
+                                    showAggragateDataMarkers = false;
+                                  });
+                                },
+                                activeColor: Theme.of(context).colorScheme.onPrimary,
+                                activeTrackColor: hydrometStations.color,
+                                inactiveThumbColor:
+                                    Theme.of(context).colorScheme.onSecondary,
+                                inactiveTrackColor: agrimetStations.color,
+                              ),
+
+                              Center(
+                                child: Text(
+                                  showHydroMet ? 'HydroMet' : 'AgriMet',
+                                  style: TextStyle(
+                                      color: Colors.black),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    )
-                  : Container()
+                      ],
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
