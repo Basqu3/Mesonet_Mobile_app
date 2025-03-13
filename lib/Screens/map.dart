@@ -90,7 +90,7 @@ class _mapState extends State<map> {
 
     agrimetStations = Icon(
       Icons.star,
-      color: Color.fromARGB(255, 46, 155, 18),
+      color: Color.fromARGB(255, 53, 110, 91),
       size: _markerSize,
     );
 
@@ -174,7 +174,7 @@ class _mapState extends State<map> {
               Icons.star,
               color: showAggragateDataMarkers
                   ? setMarkerColor(station.air_temp!, true)
-                  : Color.fromARGB(255, 46, 155, 18),
+                  : Color.fromARGB(255, 53, 110, 91),
               size: _markerSize,
             ),
           ),
@@ -437,7 +437,13 @@ class _mapState extends State<map> {
 
                     // print(snapshot.data);
 
-                    return ListView.builder(
+                    return (stationList.isEmpty)
+                        ? const Center(
+                            child: Text('No Favorites'),
+                          )
+                        :
+                    
+                    ListView.builder(
                         padding: EdgeInsets.all(10),
                         itemCount: stationList.length,
                         itemBuilder: (context, index) {

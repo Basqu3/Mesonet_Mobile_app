@@ -122,38 +122,40 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                     widget.isHydromet
                                         ? PhotoPage(id: widget.id)
                                         : Container(),
-                                    Positioned(
-                                      left: 10,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: FadeTransition(
-                                        opacity:
-                                            Tween(begin: 1.0, end: 0.0).animate(
-                                          CurvedAnimation(
-                                            parent: _animationController,
-                                            curve: Interval(0.3, 1.0,
-                                                curve: Curves.easeOutBack),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FadeTransition(
+                                          opacity:
+                                              Tween(begin: 1.0, end: 0.0).animate(
+                                            CurvedAnimation(
+                                              parent: _animationController,
+                                              curve: Interval(0.3, 1.0,
+                                                  curve: Curves.easeOutBack),
+                                            ),
                                           ),
+                                          child: Icon(Icons.arrow_back,
+                                              color: Colors.white),
                                         ),
-                                        child: Icon(Icons.arrow_back,
-                                            color: Colors.white),
                                       ),
                                     ),
-                                    Positioned(
-                                      right: 10,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: FadeTransition(
-                                        opacity:
-                                            Tween(begin: 1.0, end: 0.0).animate(
-                                          CurvedAnimation(
-                                            parent: _animationController,
-                                            curve: Interval(0.3, 1.0,
-                                                curve: Curves.easeOutBack),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FadeTransition(
+                                          opacity:
+                                              Tween(begin: 1.0, end: 0.0).animate(
+                                            CurvedAnimation(
+                                              parent: _animationController,
+                                              curve: Interval(0.3, 1.0,
+                                                  curve: Curves.easeOutBack),
+                                            ),
                                           ),
+                                          child: Icon(Icons.arrow_forward,
+                                              color: Colors.white),
                                         ),
-                                        child: Icon(Icons.arrow_forward,
-                                            color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -272,6 +274,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                           child: Alerts(
                                             lat: widget.lat,
                                             lng: widget.lng,
+                                            isHydromet: widget.isHydromet,
                                           )),
                                     ),
                                   ),
@@ -301,21 +304,24 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                             id: widget.id,
                                             isHydromet: widget.isHydromet,
                                           ),
-                                          Positioned(
-                                            bottom: 10,
-                                            child: FadeTransition(
-                                              opacity:
-                                                  Tween(begin: 1.0, end: 0.0)
-                                                      .animate(
-                                                CurvedAnimation(
-                                                  parent: _animationController,
-                                                  curve: Interval(0.3, 1.0,
-                                                      curve:
-                                                          Curves.easeOutBack),
+                                          Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: FadeTransition(
+                                                opacity:
+                                                    Tween(begin: 1.0, end: 0.0)
+                                                        .animate(
+                                                  CurvedAnimation(
+                                                    parent: _animationController,
+                                                    curve: Interval(0.3, 1.0,
+                                                        curve:
+                                                            Curves.easeOutBack),
+                                                  ),
                                                 ),
+                                                child: Icon(Icons.arrow_downward,
+                                                    color: Colors.white),
                                               ),
-                                              child: Icon(Icons.arrow_downward,
-                                                  color: Colors.white),
                                             ),
                                           ),
                                         ]),

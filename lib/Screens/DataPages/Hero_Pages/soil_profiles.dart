@@ -13,14 +13,14 @@ FL Charts should be able to make my graphs? */
 class soil_profiles extends StatefulWidget {
   final Data data;
   final bool isHydromet;
-  const soil_profiles({super.key,required this.isHydromet, required this.data});
+  const soil_profiles(
+      {super.key, required this.isHydromet, required this.data});
 
   @override
   State<soil_profiles> createState() => _soil_profilesState();
 }
 
 class _soil_profilesState extends State<soil_profiles> {
-
   List<double> getTempRange() {
     List<double> range = [
       widget.data.soilTemperature5 ?? 0.0,
@@ -30,7 +30,7 @@ class _soil_profilesState extends State<soil_profiles> {
       widget.data.soilTemperature100 ?? 0.0,
     ];
 
-    return [range.reduce(max) + 5 , range.reduce(min) - 5];
+    return [range.reduce(max) + 5, range.reduce(min) - 5];
   }
 
   Color getGradientColors(double input, bool temperatureBool) {
@@ -42,8 +42,8 @@ class _soil_profilesState extends State<soil_profiles> {
       rbColorTemp = Rainbow(
         spectrum: [
           Colors.blue.shade900,
-          Color.fromARGB(255,43,140,190),
-          Color.fromARGB(255,189,201,225),
+          Color.fromARGB(255, 43, 140, 190),
+          Color.fromARGB(255, 189, 201, 225),
           Colors.white,
         ], //cold to hot
         rangeStart: getTempRange()[1],
@@ -53,8 +53,8 @@ class _soil_profilesState extends State<soil_profiles> {
       rbColorTemp = Rainbow(
         spectrum: [
           Color.fromARGB(255, 255, 255, 120),
-          Color.fromARGB(255, 253,141,60),
-          Color.fromARGB(255, 240,59,32),
+          Color.fromARGB(255, 253, 141, 60),
+          Color.fromARGB(255, 240, 59, 32),
         ], //cold to hot
         rangeStart: getTempRange()[1],
         rangeEnd: getTempRange()[0],
@@ -68,13 +68,12 @@ class _soil_profilesState extends State<soil_profiles> {
     var rbColorVWC = Rainbow(
       spectrum: [
         Color.fromARGB(255, 166, 96, 26),
-        Color.fromARGB(255,223,194,125),
-        Color.fromARGB(255,245,245,245),
+        Color.fromARGB(255, 223, 194, 125),
+        Color.fromARGB(255, 245, 245, 245),
         Color.fromARGB(255, 106, 219, 135),
         Color.fromARGB(255, 1, 133, 113),
-
       ], //cold to hot
-      rangeStart: 0,  
+      rangeStart: 0,
       rangeEnd: 50,
     );
 
@@ -102,112 +101,314 @@ class _soil_profilesState extends State<soil_profiles> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Flexible(
-                flex: 2,
+                  flex: 2,
                   child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                verticalDirection: VerticalDirection.up,
-                children: [
-                  Text('40"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text('20"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 8"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 4"', style: TextStyle(fontWeight: FontWeight.w500)),
-                  Text(' 2"', style: TextStyle(fontWeight: FontWeight.w500)),
-                ],
-              )),
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    verticalDirection: VerticalDirection.up,
+                    children: widget.isHydromet
+                        ? [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text('40"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text('20"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(' 8"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(' 4"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(' 2"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
+                          ]
+                        : [ //agrimet labels. no 2" sensor
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text('40"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onSecondary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text('20"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onSecondary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(' 8"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onSecondary)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(' 4"',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onSecondary)),
+                          ),
+                          ],
+                  )),
               Flexible(
-                flex: 3,
+                  flex: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
+                      border: Border.all(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          width: 1),
+                    ),
                     child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                    Expanded(
-                        child: Container(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: widget.isHydromet
+                      ? [
+                        Expanded(
+                            child: Container(
                           color: getGradientColors(
-                          widget.data.soilTemperature5?? 999.99, true),
-                          child: Center(child: Text('${widget.data.soilTemperature5.toString()}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilTemperature10?? 999.99, true),
-                          child: Center(child: Text('${widget.data.soilTemperature10.toString()}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilTemperature20?? 999.99, true),
-                          child: Center(child: Text('${widget.data.soilTemperature20.toString()}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilTemperature50?? 999.99, true),
-                          child: Center(child: Text('${widget.data.soilTemperature50.toString()}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilTemperature100?? 999.99, true),
-                          child: Center(child: Text('${widget.data.soilTemperature100.toString()}°F',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                                    ],
-                                  ),
+                              widget.data.soilTemperature5 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature5.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature10 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature10.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature20 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature20.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature50 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature50.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature100 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature100.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                      ]
+                      : [ //agrimet temp profiles
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature10 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature10.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature20 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature20.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature50 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature50.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilTemperature100 ?? 999.99, true),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilTemperature100.toString()}°F',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                      ]
+                    ),
                   )),
-              
               Flexible(
-                flex: 3,
+                  flex: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color:Theme.of(context).colorScheme.onPrimaryContainer, width: 1),),
+                      border: Border.all(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          width: 1),
+                    ),
                     child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC5?? 999.99, false),
-                          child: Center(child: Text('${widget.data.soilVWC5.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC10?? 999.99, false),
-                          child: Center(child: Text('${widget.data.soilVWC10.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC20?? 999.99, false),
-                          child: Center(child: Text('${widget.data.soilVWC20.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC50?? 999.99, false),
-                          child: Center(child: Text('${widget.data.soilVWC50.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                    Expanded(
-                        child: Container(
-                      color: getGradientColors(
-                          widget.data.soilVWC100?? 999.99, false),
-                          child: Center(child: Text('${widget.data.soilVWC100.toString()}%',
-                          style: TextStyle(fontSize: 10),),),
-                    )),
-                                    ],
-                                  ),
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: widget.isHydromet
+                      ?[
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC5 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC5.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC10 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC10.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC20 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC20.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC50 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC50.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC100 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC100.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                      ]
+                      : [ //agrimet VWC profiles
+                      
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC10 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC10.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC20 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC20.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC50 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC50.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                        Expanded(
+                            child: Container(
+                          color: getGradientColors(
+                              widget.data.soilVWC100 ?? 999.99, false),
+                          child: Center(
+                            child: Text(
+                              '${widget.data.soilVWC100.toString()}%',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )),
+                      ],
+                    ),
                   )),
-
             ],
           ),
         ))

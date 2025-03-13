@@ -36,7 +36,7 @@ const ColorScheme lightColorScheme = ColorScheme(
     onPrimaryContainer: Colors.black54,
     onPrimaryFixed: Colors.white,
 
-    secondary: Color(0xff40826D),
+    secondary: Color.fromARGB(255, 25, 68, 54),
     onSecondary: Colors.white70,
     secondaryContainer: Color(0xff9FD3BF),
     onSecondaryContainer: Colors.black54,
@@ -57,7 +57,7 @@ const ColorScheme darkColorScheme = ColorScheme(
     onPrimaryContainer: Colors.black54,
     onPrimaryFixed: Colors.white,
 
-    secondary: Color(0xff40826D),
+    secondary: Color.fromARGB(255, 53, 110, 91),
     onSecondary: Colors.white70,
     secondaryContainer: Color(0xff9FD3BF),
     onSecondaryContainer: Colors.black54,

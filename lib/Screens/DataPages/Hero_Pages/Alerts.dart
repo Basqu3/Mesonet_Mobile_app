@@ -7,7 +7,8 @@ import 'dart:convert';
 class Alerts extends StatefulWidget {
   final double lat;
   final double lng;
-  const Alerts({required this.lat, required this.lng, super.key});
+  final bool isHydromet;
+  const Alerts({required this.lat, required this.lng, required this.isHydromet,super.key});
 
   @override
   State<Alerts> createState() => _AlertsState();
@@ -42,7 +43,8 @@ class _AlertsState extends State<Alerts> {
   Widget build(BuildContext context) {
     return FutureBuilder(future: getAlerts(), builder: (builder, snapshot) {
       if (snapshot.hasData) {
-        return ListView(
+        return snapshot.data!['features'].length > 0 
+        ? ListView(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -56,26 +58,25 @@ class _AlertsState extends State<Alerts> {
                 )
                 : Container(),
                 
-                snapshot.data!['features'].length > 0 
-                ? Expanded(
+                Expanded(
                   child: Text(snapshot.data!['features'][0]['properties']['event'].toString(), style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 12),
                     textAlign: TextAlign.center,),
                 )
-                : Expanded(child: Text('No Weather Alerts', style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 12),
-                  textAlign: TextAlign.center,  
-                )
-                ) 
                 ]
                 //getting a ]response here. If statement based off
                 //whether features [] is empty or not. Listview with cards maybe?
               ),
             )
           ],
-        );
+        )
+        : Center(child: Text('No Weather Alerts',textAlign: TextAlign.center,
+        style: TextStyle(
+          color: widget.isHydromet
+          ? Theme.of(context).colorScheme.onPrimary
+          : Theme.of(context).colorScheme.onSecondary
+          ),));
       } else {
         return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
       }

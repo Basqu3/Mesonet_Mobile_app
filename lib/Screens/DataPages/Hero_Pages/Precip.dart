@@ -185,6 +185,11 @@ class _PrecipState extends State<Precip> {
       },
       
     ) //Switch case for agrimet stations. Have to derive the precip manually
-    : const Text('No Precip Data Available');
+    : Center(child: Text('No Precip Data Available',textAlign: TextAlign.center,
+    style: TextStyle(
+      color: widget.isHydromet
+      ? Theme.of(context).colorScheme.onPrimary
+      : Theme.of(context).colorScheme.onSecondary
+    ),));
   }
 }
