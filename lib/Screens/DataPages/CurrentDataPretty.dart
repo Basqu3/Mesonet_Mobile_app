@@ -247,7 +247,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                     contentTitle: 
                                       'We install soil sensors at various depths to monitor the flow of water.\n'
                                       'The soil profile information includes the temperature of the soil at the given depths and the volumetric water content of the soil.\n'
-                                      'We are working on calculating the percentage soil saturation',
+                                      'VWC = (volume of water/volume of soil expressed as a percentage)\n'
+                                      'The soil profile is a valuable tool for understanding the movement of water through the soil and the potential for runoff.',
                                     arrowTheme: const InfoPopupArrowTheme(
                                       color: Colors.white,
                                     ),

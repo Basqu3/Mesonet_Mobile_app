@@ -172,9 +172,12 @@ class _mapState extends State<map> {
             },
             child: Icon(
               Icons.star,
-              color: showAggragateDataMarkers
-                  ? setMarkerColor(station.air_temp!, true)
-                  : Color.fromARGB(255, 53, 110, 91),
+              color: isCurrentDate(station.date!)
+                  ?
+                showAggragateDataMarkers
+                    ? setMarkerColor(station.air_temp!, true)
+                    : Color.fromARGB(255, 53, 110, 91)
+                  : Colors.black54,
               size: _markerSize,
             ),
           ),
@@ -721,7 +724,9 @@ class _mapState extends State<map> {
                                 ),
                               )
                             : Container(),
-                        Card(
+
+                            !showPrecipAggragateDataMarker
+                        ?Card(
                             color: Colors.white38,
                             child: Padding(
                               padding:
@@ -755,7 +760,8 @@ class _mapState extends State<map> {
                                   ),
                                 ],
                               ),
-                            )),
+                            ))
+                            : Container(),
                       ],
                     ),
                   ),
