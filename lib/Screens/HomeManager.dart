@@ -68,7 +68,7 @@ class _aboutState extends State<about> {
       ..loadRequest(Uri.parse('https://climate.umt.edu/about/?theme=dark'));
 
     NavigationDelegate(onNavigationRequest: (NavigationRequest request) {
-      if (request.url.startsWith('https://airtable.com')) {
+      if (request.url.startsWith('https://climate.umt.edu.com')) {
         return NavigationDecision.navigate;
       }
       return NavigationDecision.prevent;

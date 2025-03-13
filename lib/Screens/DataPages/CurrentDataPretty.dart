@@ -3,6 +3,7 @@ import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:info_popup/info_popup.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'JSONData.dart';
@@ -127,8 +128,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: FadeTransition(
-                                          opacity:
-                                              Tween(begin: 1.0, end: 0.0).animate(
+                                          opacity: Tween(begin: 1.0, end: 0.0)
+                                              .animate(
                                             CurvedAnimation(
                                               parent: _animationController,
                                               curve: Interval(0.3, 1.0,
@@ -145,8 +146,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: FadeTransition(
-                                          opacity:
-                                              Tween(begin: 1.0, end: 0.0).animate(
+                                          opacity: Tween(begin: 1.0, end: 0.0)
+                                              .animate(
                                             CurvedAnimation(
                                               parent: _animationController,
                                               curve: Interval(0.3, 1.0,
@@ -235,10 +236,30 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                               )),
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: soil_profiles(
-                              data: snapshot.data!,
-                              isHydromet: widget.isHydromet,
-                            ),
+                            child: Stack(children: [
+                              soil_profiles(
+                                data: snapshot.data!,
+                                isHydromet: widget.isHydromet,
+                              ),
+                              Align(
+                                  alignment: Alignment.topRight,
+                                  child: InfoPopupWidget(
+                                    contentTitle: 
+                                      'We install soil sensors at various depths to monitor the flow of water.\n'
+                                      'The soil profile information includes the temperature of the soil at the given depths and the volumetric water content of the soil.\n'
+                                      'We are working on calculating the percentage soil saturation',
+                                    arrowTheme: const InfoPopupArrowTheme(
+                                      color: Colors.white,
+                                    ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white38,
+                                        ),
+                                        child: Icon(Icons.question_mark_rounded,size: 15,))
+                                      )
+                                    )
+                            ]),
                           ),
                         ),
                       ),
@@ -307,19 +328,22 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                           Align(
                                             alignment: Alignment.bottomCenter,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
                                               child: FadeTransition(
                                                 opacity:
                                                     Tween(begin: 1.0, end: 0.0)
                                                         .animate(
                                                   CurvedAnimation(
-                                                    parent: _animationController,
+                                                    parent:
+                                                        _animationController,
                                                     curve: Interval(0.3, 1.0,
                                                         curve:
                                                             Curves.easeOutBack),
                                                   ),
                                                 ),
-                                                child: Icon(Icons.arrow_downward,
+                                                child: Icon(
+                                                    Icons.arrow_downward,
                                                     color: Colors.white),
                                               ),
                                             ),

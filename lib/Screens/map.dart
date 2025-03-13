@@ -80,7 +80,7 @@ class _mapState extends State<map> {
     WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
     WidgetsBinding.instance.addPostFrameCallback((_) => getStations());
     mapController = MapController();
-    _markerSize = 16.0; // Default marker size
+    _markerSize = 14.0; // Default marker size
 
     hydrometStations = Icon(
       Icons.circle_sharp,
@@ -246,7 +246,7 @@ class _mapState extends State<map> {
       });
     } else {
       setState(() {
-        _markerSize = 20;
+        _markerSize = 15;
       });
     }
   }
@@ -438,39 +438,38 @@ class _mapState extends State<map> {
                         ? const Center(
                             child: Text('No Favorites'),
                           )
-                        :
-                    
-                    ListView.builder(
-                        padding: EdgeInsets.all(10),
-                        itemCount: stationList.length,
-                        itemBuilder: (context, index) {
-                          StationMarker station = stationList[index];
+                        : ListView.builder(
+                            padding: EdgeInsets.all(10),
+                            itemCount: stationList.length,
+                            itemBuilder: (context, index) {
+                              StationMarker station = stationList[index];
 
-                          return ListTile(
-                            leading: Icon(
-                              station.subNetwork == "HydroMet"
-                                  ? hydrometStations.icon
-                                  : agrimetStations.icon,
-                              color: station.subNetwork == "HydroMet"
-                                  ? hydrometStations.color
-                                  : agrimetStations.color,
-                            ),
-                            title: Text(station.name),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HydroStationPage(
-                                    station: station,
-                                    hydroBool: station.subNetwork == "HydroMet"
-                                        ? 1
-                                        : 0,
-                                  ),
+                              return ListTile(
+                                leading: Icon(
+                                  station.subNetwork == "HydroMet"
+                                      ? hydrometStations.icon
+                                      : agrimetStations.icon,
+                                  color: station.subNetwork == "HydroMet"
+                                      ? hydrometStations.color
+                                      : agrimetStations.color,
                                 ),
+                                title: Text(station.name),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HydroStationPage(
+                                        station: station,
+                                        hydroBool:
+                                            station.subNetwork == "HydroMet"
+                                                ? 1
+                                                : 0,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
-                            },
-                          );
-                        });
+                            });
                   }
                 }),
           ),
@@ -587,9 +586,9 @@ class _mapState extends State<map> {
                       children: [
                         showAggragateDataMarkers
                             ? Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Card(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       //   side: BorderSide(  //adds black border to card
@@ -614,59 +613,68 @@ class _mapState extends State<map> {
                                             Stack(
                                               children: [
                                                 Container(
-                                                  height: 20,
+                                                  height: 24,
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.0)),
                                                       gradient: LinearGradient(
-                                                    colors:
-                                                        !showPrecipAggragateDataMarker
-                                                            ? [
-                                                                setMarkerColor(
-                                                                    minTemp, true),
-                                                                !(minTemp >= 32 ||
-                                                                        maxTemp <=
-                                                                            32)
-                                                                    ? setMarkerColor(
-                                                                        31, true)
-                                                                    : setMarkerColor(
-                                                                        (2.25 *
-                                                                            (minTemp +
-                                                                                maxTemp) /
-                                                                            5),
+                                                        colors:
+                                                            !showPrecipAggragateDataMarker
+                                                                ? [
+                                                                    setMarkerColor(
+                                                                        minTemp,
                                                                         true),
-                                                                !(minTemp >= 32 ||
-                                                                        maxTemp <=
-                                                                            32)
-                                                                    ? setMarkerColor(
-                                                                        33, true)
-                                                                    : setMarkerColor(
-                                                                        (2.75 *
-                                                                            (minTemp +
-                                                                                maxTemp) /
-                                                                            5),
-                                                                        true),
-                                                                setMarkerColor(
-                                                                    maxTemp, true)
-                                                              ]
-                                                            : [
-                                                                setMarkerColor(
-                                                                    0, false),
-                                                                setMarkerColor(
-                                                                    maxPrecip / 2,
-                                                                    false),
-                                                                setMarkerColor(
-                                                                    maxPrecip,
-                                                                    false),
-                                                              ],
-                                                  )),
+                                                                    !(minTemp >=
+                                                                                32 ||
+                                                                            maxTemp <=
+                                                                                32)
+                                                                        ? setMarkerColor(
+                                                                            31,
+                                                                            true)
+                                                                        : setMarkerColor(
+                                                                            (2.25 *
+                                                                                (minTemp + maxTemp) /
+                                                                                5),
+                                                                            true),
+                                                                    !(minTemp >=
+                                                                                32 ||
+                                                                            maxTemp <=
+                                                                                32)
+                                                                        ? setMarkerColor(
+                                                                            33,
+                                                                            true)
+                                                                        : setMarkerColor(
+                                                                            (2.75 *
+                                                                                (minTemp + maxTemp) /
+                                                                                5),
+                                                                            true),
+                                                                    setMarkerColor(
+                                                                        maxTemp,
+                                                                        true)
+                                                                  ]
+                                                                : [
+                                                                    setMarkerColor(
+                                                                        0,
+                                                                        false),
+                                                                    setMarkerColor(
+                                                                        maxPrecip /
+                                                                            2,
+                                                                        false),
+                                                                    setMarkerColor(
+                                                                        maxPrecip,
+                                                                        false),
+                                                                  ],
+                                                      )),
                                                 ),
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 5),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
                                                   child: Row(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment.end,
+                                                          CrossAxisAlignment
+                                                              .end,
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceBetween,
@@ -675,8 +683,8 @@ class _mapState extends State<map> {
                                                               ? [
                                                                   Text('0 in',
                                                                       style: TextStyle(
-                                                                          color: Colors
-                                                                              .white)),
+                                                                          color:
+                                                                              Colors.white)),
                                                                   Text(
                                                                     '$maxPrecip in',
                                                                     style: TextStyle(
@@ -688,16 +696,17 @@ class _mapState extends State<map> {
                                                                   Text(
                                                                     '${minTemp.toStringAsFixed(0)}°F',
                                                                     style: TextStyle(
-                                                                        color: (minTemp >= 32)
-                                                                            ? Colors
-                                                                                .black
-                                                                            : Colors
-                                                                                .white),
+                                                                        color: (minTemp >=
+                                                                                32)
+                                                                            ? Colors.black
+                                                                            : Colors.white),
                                                                   ),
                                                                   !(minTemp >=
                                                                           32.00)
-                                                                      ? Text('32°F')
-                                                                      : Text(''),
+                                                                      ? Text(
+                                                                          '32°F')
+                                                                      : Text(
+                                                                          ''),
                                                                   Text(
                                                                       '${maxTemp.toStringAsFixed(0)}°F'),
                                                                 ]),
@@ -709,43 +718,44 @@ class _mapState extends State<map> {
                                       ),
                                     ),
                                   ),
-                              ),
-                            )
+                                ),
+                              )
                             : Container(),
                         Card(
-                          color: Colors.white38,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child:  Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Switch(
-                                value: showHydroMet,
-                                onChanged: (value) {
-                                  setState(() {
-                                    showPrecipAggragateDataMarker = false;
-                                    showHydroMet = value;
-                                    showAggragateDataMarkers = false;
-                                  });
-                                },
-                                activeColor: Theme.of(context).colorScheme.onPrimary,
-                                activeTrackColor: hydrometStations.color,
-                                inactiveThumbColor:
-                                    Theme.of(context).colorScheme.onSecondary,
-                                inactiveTrackColor: agrimetStations.color,
+                            color: Colors.white38,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Switch(
+                                    value: showHydroMet,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        showPrecipAggragateDataMarker = false;
+                                        showHydroMet = value;
+                                        showAggragateDataMarkers = false;
+                                      });
+                                    },
+                                    activeColor:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    activeTrackColor: hydrometStations.color,
+                                    inactiveThumbColor: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary,
+                                    inactiveTrackColor: agrimetStations.color,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      showHydroMet ? 'HydroMet' : 'AgriMet',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
                               ),
-                          
-                              Center(
-                                child: Text(
-                                  showHydroMet ? 'HydroMet' : 'AgriMet',
-                                  style: TextStyle(
-                                      color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),)
-                         
-                        ),
+                            )),
                       ],
                     ),
                   ),
