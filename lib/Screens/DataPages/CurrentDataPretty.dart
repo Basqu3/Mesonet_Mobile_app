@@ -185,6 +185,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
                             'Air Temperature: ${snapshot.data!.airTemperature.toString()}[°F]',
+                            softWrap: false,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -198,6 +199,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
                             'Relative Humidity: ${snapshot.data!.relativeHumidity.toString()}[%]',
+                            softWrap: false,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

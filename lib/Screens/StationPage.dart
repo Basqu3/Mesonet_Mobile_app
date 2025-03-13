@@ -197,11 +197,10 @@ class _HydroStationPageState extends State<HydroStationPage> {
                 return _pages[index % _pages.length];
               },
             ),
-            Positioned(
-                bottom: 5,
-                left: 125,
-                right: 125,
-                top: 765,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
                 child: Container(
                   color: Colors.transparent,
                   child: Row(
@@ -230,7 +229,9 @@ class _HydroStationPageState extends State<HydroStationPage> {
                                   ),
                                 ),
                               ))),
-                ))
+                ),
+              ),
+            )
           ],
         ));
   }

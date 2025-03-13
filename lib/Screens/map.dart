@@ -711,6 +711,7 @@ class _mapState extends State<map> {
                         Padding(
                           padding: const EdgeInsets.only(right: 5.0, bottom:6),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Switch(
                                 value: showHydroMet,
