@@ -10,8 +10,9 @@ class HomeManager extends StatefulWidget {
 }
 
 class _HomeManagerState extends State<HomeManager> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 final List _screens = [
+  const feedback(),
   map(),
   const about(),
 ];
@@ -33,6 +34,11 @@ final List _screens = [
           });
         },
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer,),
+            label: 'Feedback',
+            ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: "Map",
@@ -69,7 +75,7 @@ class _aboutState extends State<about> {
   @override
   void dispose() {
     super.dispose();
-    
+    controller.loadRequest(Uri.parse('about:blank'));
   }
 
   @override
@@ -79,3 +85,31 @@ class _aboutState extends State<about> {
   }
 }
 
+class feedback extends StatefulWidget {  //https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form
+  const feedback({super.key});
+
+  @override
+  State<feedback> createState() => _feedbackState();
+}
+
+class _feedbackState extends State<feedback> {
+   late WebViewController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(Uri.parse('https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form'));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.loadRequest(Uri.parse('about:blank'));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(child: WebViewWidget(controller: controller));
+  }
+}

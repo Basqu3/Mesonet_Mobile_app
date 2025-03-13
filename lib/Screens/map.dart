@@ -187,7 +187,6 @@ class _mapState extends State<map> {
   Future<List<StationMarker>> getStations() async {
     String url = 'https://mesonet.climate.umt.edu/api/v2/app/?type=json';
     String response = '';
-    print('hit');
     try {
       response = await compute(apiCall, url);
     } catch (e) {
@@ -435,8 +434,6 @@ class _mapState extends State<map> {
                     List<StationMarker> stationList =
                         snapshot.data as List<StationMarker>;
 
-                    // print(snapshot.data);
-
                     return (stationList.isEmpty)
                         ? const Center(
                             child: Text('No Favorites'),
@@ -617,8 +614,9 @@ class _mapState extends State<map> {
                                             Stack(
                                               children: [
                                                 Container(
-                                                  height: 18,
+                                                  height: 20,
                                                   decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
                                                       gradient: LinearGradient(
                                                     colors:
                                                         !showPrecipAggragateDataMarker
@@ -714,9 +712,11 @@ class _mapState extends State<map> {
                               ),
                             )
                             : Container(),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5.0, bottom:6),
-                          child: Column(
+                        Card(
+                          color: Colors.white38,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child:  Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Switch(
@@ -734,7 +734,7 @@ class _mapState extends State<map> {
                                     Theme.of(context).colorScheme.onSecondary,
                                 inactiveTrackColor: agrimetStations.color,
                               ),
-
+                          
                               Center(
                                 child: Text(
                                   showHydroMet ? 'HydroMet' : 'AgriMet',
@@ -743,7 +743,8 @@ class _mapState extends State<map> {
                                 ),
                               ),
                             ],
-                          ),
+                          ),)
+                         
                         ),
                       ],
                     ),
