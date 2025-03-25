@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:convert';
+import 'package:info_popup/info_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:rainbow_color/rainbow_color.dart';
@@ -141,6 +143,33 @@ class _mapState extends State<map> {
                 ),
               );
             },
+            onLongPress: () {  //pop up text? 
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Station Information'),
+                    content: Text('Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
+                        'Station Name: ${station.name}\n'
+                        'Station ID: ${station.id}\n'
+                        'Latitude: ${station.lat}*\n'
+                        'Longitude: ${station.lon}*\n'
+                        'Air Temperature: ${station.air_temp}°F\n'
+                        '7-Day Precipitation: ${station.precipSummary}"\n\n'
+                        '*Latitude and Longitude are approximate.'
+                        ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Close'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
             child: Icon(
               Icons.circle_sharp,
               color: isCurrentDate(station.date!) //is current date
@@ -168,6 +197,33 @@ class _mapState extends State<map> {
                   builder: (context) =>
                       HydroStationPage(station: station, hydroBool: 0),
                 ),
+              );
+            },
+            onLongPress: () {  //pop up text? 
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    
+                    title: Text('Station Information'),
+                    content: Text('Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!)) }\n'
+                        'Station Name: ${station.name}\n'
+                        'Station ID: ${station.id}\n'
+                        'Latitude: ${station.lat}*\n'
+                        'Longitude: ${station.lon}*\n'
+                        'Air Temperature: ${station.air_temp}°F\n\n'
+                        '*Latitude and Longitude are approximate.'
+                        ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Close'),
+                      ),
+                    ],
+                  );
+                },
               );
             },
             child: Icon(
@@ -393,7 +449,15 @@ class _mapState extends State<map> {
                 }
               });
             },
-            child: Icon(FABReturnIcon(markerindex)),
+            child: GestureDetector(
+              child: Icon(FABReturnIcon(markerindex)),
+              onLongPress: () {
+                InfoPopupWidget(
+                  contentTitle: "Map Legend",
+                  child: Container(),
+                );
+              },
+              ),
           ),
           appBar: AppBar(
             leading: Builder(builder: (context) {

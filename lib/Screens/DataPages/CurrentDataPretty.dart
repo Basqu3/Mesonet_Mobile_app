@@ -186,8 +186,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                         Flexible(
                             child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'Air Temperature: ${snapshot.data!.airTemperature?.toStringAsFixed(2)}°F',
+                          child: (snapshot.data!.airTemperature != null)
+                          ?Text(
+                            'Air Temperature: ${snapshot.data!.airTemperature!.toStringAsFixed(2)}°F',
                             softWrap: false,
                             style: TextStyle(
                                 fontSize: 14,
@@ -195,13 +196,16 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onPrimaryFixed),
-                          ),
+                          )
+                          : Text('Temperature N/A'),
+
                         )),
                         Flexible(
                             child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'Relative Humidity: ${snapshot.data!.relativeHumidity?.toStringAsFixed(2)}%',
+                          child:(snapshot.data!.relativeHumidity != null)
+                           ? Text(
+                            'Relative Humidity: ${snapshot.data!.relativeHumidity!.toStringAsFixed(2)}%',
                             softWrap: false,
                             style: TextStyle(
                                 fontSize: 14,
@@ -209,7 +213,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onPrimaryFixed),
-                          ),
+                          )
+                          : Text('Humidity N/A'),
                         )),
                       ],
                     ),
