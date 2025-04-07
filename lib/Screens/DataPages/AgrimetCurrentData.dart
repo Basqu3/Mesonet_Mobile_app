@@ -41,12 +41,12 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
     );
 
     super.initState();
+
     _animationController.forward();
     _dataFuture = getData(
         'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
     _dataFuture.then((value) {
       if (!isCurrentDate(value.datetime!) && mounted) {
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Center(
@@ -59,12 +59,11 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
           ),
         );
       }
-    }
-    );
-  WidgetsBinding.instance.addPostFrameCallback((_){
-    hasPhotoCheck(widget.id);
-  });
-
+    });
+    hasPhoto = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      hasPhotoCheck(widget.id);
+    });
   }
 
   @override
@@ -89,12 +88,14 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
   }
 
   void hasPhotoCheck(String id) async {
-    http.Response request = await http.get(Uri.parse('https://mesonet.climate.umt.edu/api/v2/photos/$id'));
+    http.Response request = await http
+        .get(Uri.parse('https://mesonet.climate.umt.edu/api/v2/photos/$id'));
+    print(request.statusCode);    
     if (request.statusCode == 200) {
       hasPhoto = true;
-      } else {
-        hasPhoto = false;
-      }
+    } else {
+      hasPhoto = false;
+    }
   }
 
   bool isCurrentDate(int dateFromData) {
@@ -109,26 +110,36 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _dataFuture, 
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('No data available'));
-          } else {
-            Data data = snapshot.data!;
-            return Row(
-              children: [
-                Column(),
-                Column(),
-              ],
-            );
-          }
-        },
-      )
-    );
+        body: FutureBuilder(
+      future: _dataFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData) {
+          return const Center(child: Text('No data available'));
+        } else {
+          Data data = snapshot.data!;
+          return Row(
+            children: [
+              Column(
+                children: [
+                  Text(hasPhoto ? 'Photo' : 'No Photo'),
+                  // if photo, then photo,temp,wind
+                  //if not photo, then alerts, temp, wind
+                ],
+              ),
+              Column(
+                children: [
+                  //if photo. then alerts and soil
+                  //if not photo, then soil only
+                ],
+              ),
+            ],
+          );
+        }
+      },
+    ));
   }
 }

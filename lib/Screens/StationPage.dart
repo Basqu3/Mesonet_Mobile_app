@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:app_001/Screens/DataPages/ChartManager.dart';
 import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
+import 'package:app_001/Screens/DataPages/AgrimetCurrentData.dart';
 import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HydroStationPage extends StatefulWidget {
   final StationMarker station;
@@ -67,7 +69,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
           id: id,
           isHydromet: false,
         ),
-        CurrentDataPretty(
+        AgrimetCurrentData(
           id: id,
           lat: widget.station.lat,
           lng: widget.station.lon,
