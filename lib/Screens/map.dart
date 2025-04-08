@@ -1,5 +1,6 @@
 import 'package:app_001/Screens/StationPage.dart';
 import 'package:app_001/main.dart';
+import 'package:choice/choice.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:info_popup/info_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:rainbow_color/rainbow_color.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class map extends StatefulWidget {
   const map({super.key});
@@ -73,6 +75,7 @@ class _mapState extends State<map> {
   GeoJsonParser myGeoJson =
       GeoJsonParser(defaultPolygonBorderColor: Colors.black45);
   bool showHydroMet = true;
+  bool showAllStations = false;
 
   //Defaults are set in initState
   @override
@@ -184,7 +187,8 @@ class _mapState extends State<map> {
             ),
           ),
         ));
-      } else if (!showHydroMet && station.subNetwork == "AgriMet") {
+      }
+      if (!showHydroMet && station.subNetwork == "AgriMet"||showAllStations) {
         markers.add(Marker(
           point: LatLng(station.lat, station.lon),
           height: _markerSize,
@@ -799,29 +803,62 @@ class _mapState extends State<map> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Switch(
-                                    value: showHydroMet,
-                                    onChanged: (value) {
+
+                                    ToggleSwitch(
+                                      isVertical: true,
+                                      minHeight: 20,
+                                      minWidth: 100,
+                                    initialLabelIndex: showAllStations
+                                      ? 2
+                                      : (showHydroMet ? 1 : 0),
+                                    totalSwitches: 3,
+                                    labels: ['AgriMet', 'HydroMet', 'All Stations'],
+                                    activeBgColors: [
+                                      [agrimetStations.color!],
+                                      [hydrometStations.color!],
+                                      [Colors.grey]
+                                    ],
+                                    inactiveBgColor: Colors.white,
+                                    onToggle: (index) {
                                       setState(() {
-                                        showPrecipAggragateDataMarker = false;
-                                        showHydroMet = value;
-                                        showAggragateDataMarkers = false;
+                                      if (index == 0) {
+                                        showHydroMet = false;
+                                        showAllStations = false;
+                                      } else if (index == 1) {
+                                        showHydroMet = true;
+                                        showAllStations = false;
+                                      } else {
+                                        showAllStations = true;
+                                        showHydroMet = true;
+                                      }
                                       });
                                     },
-                                    activeColor:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                    activeTrackColor: hydrometStations.color,
-                                    inactiveThumbColor: Theme.of(context)
-                                        .colorScheme
-                                        .onSecondary,
-                                    inactiveTrackColor: agrimetStations.color,
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      showHydroMet ? 'HydroMet' : 'AgriMet',
-                                      style: TextStyle(color: Colors.black),
                                     ),
-                                  ),
+
+                                  // Switch(
+                                  //   value: showHydroMet,
+                                  //   onChanged: (value) {
+                                  //     setState(() {
+                                  //       showPrecipAggragateDataMarker = false;
+                                  //       showHydroMet = value;
+                                  //       //showAllStations = value;
+                                  //       showAggragateDataMarkers = false;
+                                  //     });
+                                  //   },
+                                  //   activeColor:
+                                  //       Theme.of(context).colorScheme.onPrimary,
+                                  //   activeTrackColor: hydrometStations.color,
+                                  //   inactiveThumbColor: Theme.of(context)
+                                  //       .colorScheme
+                                  //       .onSecondary,
+                                  //   inactiveTrackColor: agrimetStations.color,
+                                  // ),
+                                  // Center(
+                                  //   child: Text(
+                                  //     showHydroMet ? 'HydroMet' : 'AgriMet',
+                                  //     style: TextStyle(color: Colors.black),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ))
