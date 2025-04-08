@@ -51,7 +51,7 @@ class _PrecipState extends State<Precip> {
           children: [
             
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -61,15 +61,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('24 Hour Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('24 Hour Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.twentyFourHourPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.twentyFourHourPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -79,15 +79,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('7 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('7 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.sevenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.sevenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -97,15 +97,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('14 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('14 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.fourteenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.fourteenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -115,15 +115,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('30 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('30 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.thirtyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.thirtyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -133,15 +133,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('90 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('90 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.ninetyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.ninetyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -151,15 +151,15 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('Precipitation Since Midnight:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('Precipitation Since Midnight:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.PPTsinceMidnight} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.PPTsinceMidnight} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
                 ),
                 Card(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -169,9 +169,9 @@ class _PrecipState extends State<Precip> {
                 children: [
                 FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ),
-                Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+                Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                 ],
                 ),
                 ),
@@ -190,7 +190,7 @@ class _PrecipState extends State<Precip> {
     style: TextStyle(
       color: widget.isHydromet
       ? Theme.of(context).colorScheme.onPrimary
-      : Theme.of(context).colorScheme.onSecondary
+      : Theme.of(context).colorScheme.onPrimaryContainer
     ),));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:app_001/Screens/DataPages/Hero_Pages/soil_profiles.dart';
 import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
+import 'package:app_001/Screens/DataPages/Hero_Pages/heroPhotoPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:info_popup/info_popup.dart';
@@ -121,7 +122,18 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                 child: Stack(
                                   children: [
                                     widget.isHydromet
-                                        ? PhotoPage(id: widget.id)
+                                        ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HeroPhotoPage(
+                                                            id: widget.id)));
+                                          },
+                                          child: Hero(
+                                            tag: widget.id,
+                                            child: PhotoPage(id: widget.id)))
                                         : Container(),
                                     Align(
                                       alignment: Alignment.centerLeft,

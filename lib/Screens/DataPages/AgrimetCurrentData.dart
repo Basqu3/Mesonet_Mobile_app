@@ -1,6 +1,7 @@
 import 'package:app_001/Screens/DataPages/Hero_Pages/soil_profiles.dart';
 import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
+import 'package:app_001/Screens/DataPages/Hero_Pages/heroPhoto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:info_popup/info_popup.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class AgrimetCurrentData extends StatefulWidget {
   final String id;
@@ -90,7 +92,7 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
   void hasPhotoCheck(String id) async {
     http.Response request = await http
         .get(Uri.parse('https://mesonet.climate.umt.edu/api/v2/photos/$id'));
-    print(request.statusCode);    
+    print(request.statusCode);
     if (request.statusCode == 200) {
       hasPhoto = true;
     } else {
@@ -121,20 +123,270 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
           return const Center(child: Text('No data available'));
         } else {
           Data data = snapshot.data!;
-          return Row(
+          return Column(
             children: [
-              Column(
-                children: [
-                  Text(hasPhoto ? 'Photo' : 'No Photo'),
-                  // if photo, then photo,temp,wind
-                  //if not photo, then alerts, temp, wind
-                ],
+              Flexible(
+                flex: 24,
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 5,
+                      child: IntrinsicWidth(
+                        child: Column(
+                          children: [
+                            Flexible(
+                                flex: 6,
+                                child: Card(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  clipBehavior: Clip.hardEdge,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: AspectRatio(
+                                      aspectRatio: 3 / 4,
+                                      child: Stack(children: [
+                                        Center(
+                                          child: CircularProgressIndicator(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    heroPhoto(id: widget.id),
+                                              ),
+                                            );
+                                          },
+                                          child: Hero(
+                                            tag: widget.id,
+                                            child: FadeInImage(
+                                                placeholder:
+                                                    MemoryImage(kTransparentImage),
+                                                image: NetworkImage(
+                                                    'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}')),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: InfoPopupWidget(
+                                                  contentTitle:
+                                                      'All photos are static images taken at the installation of the station.\n'
+                                                      'Photos may not be available for all stations.\n'
+                                                      'We are adding new photos of agrimets all the time.',
+                                                  arrowTheme:
+                                                      const InfoPopupArrowTheme(
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.white38,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons
+                                                            .question_mark_rounded,
+                                                        size: 15,
+                                                      )))),
+                                        ),
+                                      ])),
+                                )),
+                            // if photo, then photo,temp,wind
+                            //if not photo, then alerts, temp, wind
+
+                            Flexible(
+                                flex:2,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Card(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        clipBehavior: Clip.hardEdge,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Flexible(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: (snapshot.data!
+                                                          .airTemperature !=
+                                                      null)
+                                                  ? Text(
+                                                      'Air Temperature: ${snapshot.data!.airTemperature!.toStringAsFixed(2)}°F',
+                                                      softWrap: false,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .onPrimaryFixed),
+                                                    )
+                                                  : Text('Temperature N/A'),
+                                            )),
+                                            Flexible(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: (snapshot.data!
+                                                          .relativeHumidity !=
+                                                      null)
+                                                  ? Text(
+                                                      'Relative Humidity: ${snapshot.data!.relativeHumidity!.toStringAsFixed(2)}%',
+                                                      softWrap: false,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .onPrimaryFixed),
+                                                    )
+                                                  : Text('Humidity N/A'),
+                                            )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+
+                            Flexible(
+                              flex: 6,
+                              child: Card(
+                                color: widget.isHydromet
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.secondary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: AspectRatio(
+                                        aspectRatio: 1 / 1,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'lib/assets/cadrant.png',
+                                            ),
+                                            Transform.rotate(
+                                              angle: snapshot.data!
+                                                  .windDirection as double,
+                                              child: Image.asset(
+                                                'lib/assets/compass.png',
+                                                scale: 2.0,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: Center(
+                                      child: Text(
+                                        '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: Card(
+                              color: Theme.of(context).colorScheme.secondary,
+                              clipBehavior: Clip.hardEdge,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Alerts(
+                                lat: widget.lat,
+                                lng: widget.lng,
+                                isHydromet: widget.isHydromet,
+                              ),
+                            ),
+                          ),
+                          //if photo. then alerts and soil
+                          //if not photo, then soil only
+                          Flexible(
+                            flex: 4,
+                            child: Card(
+                              color: Theme.of(context).colorScheme.secondary,
+                              clipBehavior: Clip.hardEdge,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Stack(children: [
+                                soil_profiles(
+                                  data: data,
+                                  isHydromet: false,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: InfoPopupWidget(
+                                          contentTitle:
+                                              'We install soil sensors at various depths to monitor the flow of water.\n'
+                                              'The soil profile information includes the temperature of the soil at the given depths and the volumetric water content of the soil.\n'
+                                              'VWC = (volume of water/volume of soil expressed as a percentage)\n'
+                                              'The soil profile is a valuable tool for understanding the movement of water through the soil and the potential for runoff.',
+                                          arrowTheme: const InfoPopupArrowTheme(
+                                            color: Colors.white,
+                                          ),
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white38,
+                                              ),
+                                              child: Icon(
+                                                Icons.question_mark_rounded,
+                                                size: 15,
+                                              )))),
+                                )
+                              ]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  //if photo. then alerts and soil
-                  //if not photo, then soil only
-                ],
+              Spacer(
+                flex: 1,
               ),
             ],
           );
