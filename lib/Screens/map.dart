@@ -74,8 +74,8 @@ class _mapState extends State<map> {
   late Icon agrimetStations;
   GeoJsonParser myGeoJson =
       GeoJsonParser(defaultPolygonBorderColor: Colors.black45);
-  bool showHydroMet = true;
-  bool showAllStations = false;
+  late bool showHydroMet;
+  late bool showAgrimet;
 
   //Defaults are set in initState
   @override
@@ -107,6 +107,9 @@ class _mapState extends State<map> {
 
     showAggragateDataMarkers = true;
     showPrecipAggragateDataMarker = true;
+
+    showHydroMet = true;
+    showAgrimet = false;
   }
 
   @override
@@ -188,7 +191,7 @@ class _mapState extends State<map> {
           ),
         ));
       }
-      if (!showHydroMet && station.subNetwork == "AgriMet"||showAllStations) {
+      if (showAgrimet && station.subNetwork == "AgriMet") {
         markers.add(Marker(
           point: LatLng(station.lat, station.lon),
           height: _markerSize,
@@ -244,6 +247,8 @@ class _mapState extends State<map> {
         ));
       }
     }
+
+    markers = markers.reversed.toList();
     return markers;
   }
 
@@ -446,7 +451,7 @@ class _mapState extends State<map> {
             onPressed: () {
               setState(() {
                 markerindex += 1;
-                if (showHydroMet) {
+                if (showHydroMet&&!showAgrimet) {
                   markerindex = markerindex % 3;
                 } else {
                   markerindex = markerindex % 2;
@@ -618,7 +623,7 @@ class _mapState extends State<map> {
                         ),
                         onPositionChanged: (position, hasGesture) {
                           if (hasGesture) {
-                            //_updateMarkerSize(position.zoom);
+                            _updateMarkerSize(position.zoom);
                           }
                         },
                       ),
@@ -808,27 +813,28 @@ class _mapState extends State<map> {
                                       isVertical: true,
                                       minHeight: 20,
                                       minWidth: 100,
-                                    initialLabelIndex: showAllStations
+                                    initialLabelIndex: (showAgrimet&&showHydroMet)
                                       ? 2
                                       : (showHydroMet ? 1 : 0),
                                     totalSwitches: 3,
                                     labels: ['AgriMet', 'HydroMet', 'All Stations'],
+                                    activeFgColor: Colors.white,
                                     activeBgColors: [
                                       [agrimetStations.color!],
                                       [hydrometStations.color!],
-                                      [Colors.grey]
+                                      [Colors.black54]
                                     ],
                                     inactiveBgColor: Colors.white,
                                     onToggle: (index) {
                                       setState(() {
                                       if (index == 0) {
                                         showHydroMet = false;
-                                        showAllStations = false;
+                                        showAgrimet = true;
                                       } else if (index == 1) {
                                         showHydroMet = true;
-                                        showAllStations = false;
+                                        showAgrimet = false;
                                       } else {
-                                        showAllStations = true;
+                                        showAgrimet = true;
                                         showHydroMet = true;
                                       }
                                       });
@@ -841,7 +847,7 @@ class _mapState extends State<map> {
                                   //     setState(() {
                                   //       showPrecipAggragateDataMarker = false;
                                   //       showHydroMet = value;
-                                  //       //showAllStations = value;
+                                  //       //showAgrimet = value;
                                   //       showAggragateDataMarkers = false;
                                   //     });
                                   //   },

@@ -65,7 +65,7 @@ class _AlertsState extends State<Alerts> {
                     textAlign: TextAlign.center,),
                 )
                 ]
-                //getting a ]response here. If statement based off
+                //getting a [] response here. If statement based off
                 //whether features [] is empty or not. Listview with cards maybe?
               ),
             )

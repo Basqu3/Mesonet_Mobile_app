@@ -1,2 +1,0 @@
-/home/james-seielstad/Desktop/App/app_001/android/app/.cxx/Debug/4d5o624w/x86/CMakeFiles/edit_cache.dir
-/home/james-seielstad/Desktop/App/app_001/android/app/.cxx/Debug/4d5o624w/x86/CMakeFiles/rebuild_cache.dir
