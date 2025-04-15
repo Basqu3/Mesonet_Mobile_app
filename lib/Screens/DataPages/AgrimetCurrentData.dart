@@ -33,7 +33,6 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
     with SingleTickerProviderStateMixin {
   late Future<Data> _dataFuture;
   late AnimationController _animationController;
-  late bool hasPhoto;
 
   @override
   void initState() {
@@ -62,9 +61,6 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
         );
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      hasPhotoCheck(widget.id);
-    });
   }
 
   @override
@@ -86,16 +82,6 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
     dataList = (Data.fromJson(dataMap[0]));
 
     return dataList;
-  }
-
-  void hasPhotoCheck(String id) async {
-    http.Response request = await http
-        .get(Uri.parse('https://mesonet.climate.umt.edu/api/v2/photos/$id'));
-    if (request.statusCode != 200) {
-      hasPhoto = false;
-    } else {
-      hasPhoto = true;
-    }
   }
 
   bool isCurrentDate(int dateFromData) {
@@ -152,27 +138,52 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    heroPhoto(id: widget.id),
-                                              ),
-                                            );
-                                          },
-                                            child: (hasPhoto) 
-                                          ?Hero(
-                                            tag: widget.id,
-                                            child: FadeInImage(
-                                                placeholder:
-                                                    MemoryImage(kTransparentImage),
-                                                image: NetworkImage(
-                                                    'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}')),
-                                          )
-                                          : Center(
-                                            child:Text('This site does not have a photo yet'),)
-                                        ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      heroPhoto(id: widget.id),
+                                                ),
+                                              );
+                                            },
+                                            child: Hero(
+                                                tag: widget.id,
+                                                child: Image.network(
+                                                  'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}',
+                                                  fit: BoxFit.cover,
+                                                  loadingBuilder:
+                                                      (BuildContext context,
+                                                          Widget child,
+                                                          ImageChunkEvent?
+                                                              loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        value: loadingProgress
+                                                                    .expectedTotalBytes !=
+                                                                null
+                                                            ? loadingProgress
+                                                                    .cumulativeBytesLoaded /
+                                                                loadingProgress
+                                                                    .expectedTotalBytes!
+                                                            : null,
+                                                      ),
+                                                    );
+                                                  },
+                                                  errorBuilder: (BuildContext
+                                                          context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                    return Center(
+                                                        child: Text(
+                                                            'Image does not exist or could not be loaded.'));
+                                                  },
+                                                ))),
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: Align(
@@ -203,7 +214,7 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                             //if not photo, then alerts, temp, wind
 
                             Flexible(
-                                flex:2,
+                                flex: 2,
                                 child: Row(
                                   children: [
                                     Expanded(
