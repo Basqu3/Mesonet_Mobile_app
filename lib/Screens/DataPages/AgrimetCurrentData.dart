@@ -62,7 +62,6 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
         );
       }
     });
-    hasPhoto = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       hasPhotoCheck(widget.id);
     });
@@ -92,11 +91,10 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
   void hasPhotoCheck(String id) async {
     http.Response request = await http
         .get(Uri.parse('https://mesonet.climate.umt.edu/api/v2/photos/$id'));
-    print(request.statusCode);
-    if (request.statusCode == 200) {
-      hasPhoto = true;
-    } else {
+    if (request.statusCode != 200) {
       hasPhoto = false;
+    } else {
+      hasPhoto = true;
     }
   }
 
@@ -163,14 +161,17 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                                               ),
                                             );
                                           },
-                                          child: Hero(
+                                            child: (hasPhoto) 
+                                          ?Hero(
                                             tag: widget.id,
                                             child: FadeInImage(
                                                 placeholder:
                                                     MemoryImage(kTransparentImage),
                                                 image: NetworkImage(
                                                     'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}')),
-                                          ),
+                                          )
+                                          : Center(
+                                            child:Text('This site does not have a photo yet'),)
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
