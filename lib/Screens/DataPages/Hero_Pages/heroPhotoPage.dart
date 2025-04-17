@@ -26,32 +26,46 @@ class _HeroPhotoPageState extends State<HeroPhotoPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       color: Colors.black,
-      child: Stack(
-        children:[ 
-          Center(
-            child: Hero(
-              tag: widget.id,
-              child: PhotoPage(id: widget.id),
-            ),
-          ),
-          
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                  icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Stack(
+          children:[ 
+            Center(
+              child: AspectRatio(
+                aspectRatio: 1520/855,
+                child: Hero(
+                  tag: widget.id,
+                  child: PhotoPage(id: widget.id,
+                  ),
+                ),
               ),
             ),
-          )
-          ]
+            
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+                      Navigator.pop(context);
+                    });
+                    
+                  },
+                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary),
+                ),
+              ),
+            )
+
+            
+            ]
+        ),
       ),
     );
   }

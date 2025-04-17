@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
+import 'package:flutter/services.dart';
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;
@@ -92,6 +93,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return Scaffold(
       body: FutureBuilder(
         future: _dataFuture,
@@ -100,6 +102,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
             return const Center(child: Text('Error'));
           } else if (snapshot.hasData) {
             return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 widget.isHydromet
                     ? Row(
@@ -108,71 +111,69 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                         children: [
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            child: AspectRatio(
-                              aspectRatio: 1.75,
-                              child: Card(
-                                clipBehavior: Clip.hardEdge,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryContainer,
-                                        width: 1.0)),
-                                child: Stack(
-                                  children: [
-                                    widget.isHydromet
-                                        ? GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HeroPhotoPage(
-                                                            id: widget.id)));
-                                          },
-                                          child: Hero(
-                                            tag: widget.id,
-                                            child: PhotoPage(id: widget.id)))
-                                        : Container(),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FadeTransition(
-                                          opacity: Tween(begin: 1.0, end: 0.0)
-                                              .animate(
-                                            CurvedAnimation(
-                                              parent: _animationController,
-                                              curve: Interval(0.3, 1.0,
-                                                  curve: Curves.easeOutBack),
-                                            ),
+                            height: MediaQuery.of(context).size.width/(1520/868),
+                            child: Card(
+                              clipBehavior: Clip.hardEdge,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                      width: 1.0)),
+                              child: Stack(
+                                children: [
+                                  widget.isHydromet
+                                      ? GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HeroPhotoPage(
+                                                          id: widget.id)));
+                                        },
+                                        child: Hero(
+                                          tag: widget.id,
+                                          child: PhotoPage(id: widget.id)))
+                                      : Container(),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FadeTransition(
+                                        opacity: Tween(begin: 1.0, end: 0.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
                                           ),
-                                          child: Icon(Icons.arrow_back,
-                                              color: Colors.white),
                                         ),
+                                        child: Icon(Icons.arrow_back,
+                                            color: Colors.white),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FadeTransition(
-                                          opacity: Tween(begin: 1.0, end: 0.0)
-                                              .animate(
-                                            CurvedAnimation(
-                                              parent: _animationController,
-                                              curve: Interval(0.3, 1.0,
-                                                  curve: Curves.easeOutBack),
-                                            ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FadeTransition(
+                                        opacity: Tween(begin: 1.0, end: 0.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
                                           ),
-                                          child: Icon(Icons.arrow_forward,
-                                              color: Colors.white),
                                         ),
+                                        child: Icon(Icons.arrow_forward,
+                                            color: Colors.white),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           )
