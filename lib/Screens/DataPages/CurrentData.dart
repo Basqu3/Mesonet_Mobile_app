@@ -70,12 +70,7 @@ class _CurrentdataState extends State<Currentdata> {
                             : Theme.of(context).colorScheme.secondary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer,
-                              width: 1.0,
-                            )),
+                            ),
                         child: (transformedKey ==
                                 'Vapor Pressure Deficit [Mbar]')
                             ? Stack(children: [

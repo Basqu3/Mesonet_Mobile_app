@@ -179,7 +179,7 @@ class _soil_profilesState extends State<soil_profiles> {
                   child: Container(
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       
                     ),
                     child: Stack(
@@ -303,7 +303,7 @@ class _soil_profilesState extends State<soil_profiles> {
                   child: Container(
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Stack(
                       alignment: Alignment.topCenter,

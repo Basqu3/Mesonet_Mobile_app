@@ -1,6 +1,5 @@
 import 'package:app_001/Screens/DataPages/Hero_Pages/soil_profiles.dart';
 import 'package:app_001/main.dart';
-import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/heroPhoto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
@@ -10,7 +9,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
-import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class AgrimetCurrentData extends StatefulWidget {
@@ -130,60 +128,73 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                                   child: AspectRatio(
                                       aspectRatio: 3 / 4,
                                       child: Stack(children: [
+                                        // Center(
+                                        //   child: CircularProgressIndicator(
+                                        //     color: Theme.of(context)
+                                        //         .colorScheme
+                                        //         .onPrimary,
+                                        //   ),
+                                        // ),
                                         Center(
-                                          child: CircularProgressIndicator(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary,
-                                          ),
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        heroPhoto(id: widget.id),
+                                                  ),
+                                                );
+                                              },
+                                              child: Hero(
+                                                  tag: widget.id,
+                                                  child: Image.network(
+                                                    'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}',
+                                                    fit: BoxFit.cover,
+                                                    loadingBuilder:
+                                                        (BuildContext context,
+                                                            Widget child,
+                                                            ImageChunkEvent?
+                                                                loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) {
+                                                        return child;
+                                                      }
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onSecondary,
+                                                          value: loadingProgress
+                                                                      .expectedTotalBytes !=
+                                                                  null
+                                                              ? loadingProgress
+                                                                      .cumulativeBytesLoaded /
+                                                                  loadingProgress
+                                                                      .expectedTotalBytes!
+                                                              : null,
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (BuildContext
+                                                            context,
+                                                        Object exception,
+                                                        StackTrace? stackTrace) {
+                                                      return Center(
+                                                          child: Text(
+                                                              'Image does not exist or could not be loaded.',
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .onSecondary,)
+                                                              ));
+                                                    },
+                                                  ))),
                                         ),
-                                        GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      heroPhoto(id: widget.id),
-                                                ),
-                                              );
-                                            },
-                                            child: Hero(
-                                                tag: widget.id,
-                                                child: Image.network(
-                                                  'https://mesonet.climate.umt.edu/api/v2/photos/${widget.id}',
-                                                  fit: BoxFit.cover,
-                                                  loadingBuilder:
-                                                      (BuildContext context,
-                                                          Widget child,
-                                                          ImageChunkEvent?
-                                                              loadingProgress) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        value: loadingProgress
-                                                                    .expectedTotalBytes !=
-                                                                null
-                                                            ? loadingProgress
-                                                                    .cumulativeBytesLoaded /
-                                                                loadingProgress
-                                                                    .expectedTotalBytes!
-                                                            : null,
-                                                      ),
-                                                    );
-                                                  },
-                                                  errorBuilder: (BuildContext
-                                                          context,
-                                                      Object exception,
-                                                      StackTrace? stackTrace) {
-                                                    return Center(
-                                                        child: Text(
-                                                            'Image does not exist or could not be loaded.'));
-                                                  },
-                                                ))),
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: Align(

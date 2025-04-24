@@ -448,6 +448,10 @@ class _mapState extends State<map> {
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: FloatingActionButton(
+            backgroundColor: (!showHydroMet&&showAgrimet)
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : Theme.of(context).colorScheme.primaryContainer,
+
             onPressed: () {
               setState(() {
                 markerindex += 1;
@@ -479,16 +483,14 @@ class _mapState extends State<map> {
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             centerTitle: true,
-            title: Center(
-              child: Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Image.asset(
-                    'lib/assets/MCO_logo.png',
-                    fit: BoxFit.fill,
-                    height: 50,
-                  ),
+            title: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: Image.asset(
+                  'lib/assets/mesonet_logo_png.png',
+                  fit: BoxFit.fill,
+                  height: 50,
                 ),
               ),
             ),
@@ -800,73 +802,69 @@ class _mapState extends State<map> {
 
                             !showPrecipAggragateDataMarker
                         ?Card(
-                            color: Colors.white38,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-
-                                    ToggleSwitch(
-                                      isVertical: true,
-                                      minHeight: 20,
-                                      minWidth: 100,
-                                    initialLabelIndex: (showAgrimet&&showHydroMet)
-                                      ? 2
-                                      : (showHydroMet ? 1 : 0),
-                                    totalSwitches: 3,
-                                    labels: ['AgriMet', 'HydroMet', 'All Stations'],
-                                    activeFgColor: Colors.white,
-                                    activeBgColors: [
-                                      [agrimetStations.color!],
-                                      [hydrometStations.color!],
-                                      [Colors.black54]
-                                    ],
-                                    inactiveBgColor: Colors.white,
-                                    onToggle: (index) {
-                                      setState(() {
-                                      if (index == 0) {
-                                        showHydroMet = false;
-                                        showAgrimet = true;
-                                      } else if (index == 1) {
-                                        showHydroMet = true;
-                                        showAgrimet = false;
-                                      } else {
-                                        showAgrimet = true;
-                                        showHydroMet = true;
-                                      }
-                                      });
-                                    },
-                                    ),
-
-                                  // Switch(
-                                  //   value: showHydroMet,
-                                  //   onChanged: (value) {
-                                  //     setState(() {
-                                  //       showPrecipAggragateDataMarker = false;
-                                  //       showHydroMet = value;
-                                  //       //showAgrimet = value;
-                                  //       showAggragateDataMarkers = false;
-                                  //     });
-                                  //   },
-                                  //   activeColor:
-                                  //       Theme.of(context).colorScheme.onPrimary,
-                                  //   activeTrackColor: hydrometStations.color,
-                                  //   inactiveThumbColor: Theme.of(context)
-                                  //       .colorScheme
-                                  //       .onSecondary,
-                                  //   inactiveTrackColor: agrimetStations.color,
-                                  // ),
-                                  // Center(
-                                  //   child: Text(
-                                  //     showHydroMet ? 'HydroMet' : 'AgriMet',
-                                  //     style: TextStyle(color: Colors.black),
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
+                            color: Colors.transparent,
+                            child: Column(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceAround,
+                              children: [
+                            
+                                  ToggleSwitch(
+                                    isVertical: true,
+                                    minHeight: 20,
+                                    minWidth: 100,
+                                  initialLabelIndex: (showAgrimet&&showHydroMet)
+                                    ? 2
+                                    : (showHydroMet ? 1 : 0),
+                                  totalSwitches: 3,
+                                  labels: ['AgriMet', 'HydroMet', 'All Stations'],
+                                  activeFgColor: Colors.white,
+                                  activeBgColors: [
+                                    [agrimetStations.color!],
+                                    [hydrometStations.color!],
+                                    [Colors.black54]
+                                  ],
+                                  inactiveBgColor: Colors.white,
+                                  onToggle: (index) {
+                                    setState(() {
+                                    if (index == 0) {
+                                      showHydroMet = false;
+                                      showAgrimet = true;
+                                    } else if (index == 1) {
+                                      showHydroMet = true;
+                                      showAgrimet = false;
+                                    } else {
+                                      showAgrimet = true;
+                                      showHydroMet = true;
+                                    }
+                                    });
+                                  },
+                                  ),
+                            
+                                // Switch(
+                                //   value: showHydroMet,
+                                //   onChanged: (value) {
+                                //     setState(() {
+                                //       showPrecipAggragateDataMarker = false;
+                                //       showHydroMet = value;
+                                //       //showAgrimet = value;
+                                //       showAggragateDataMarkers = false;
+                                //     });
+                                //   },
+                                //   activeColor:
+                                //       Theme.of(context).colorScheme.onPrimary,
+                                //   activeTrackColor: hydrometStations.color,
+                                //   inactiveThumbColor: Theme.of(context)
+                                //       .colorScheme
+                                //       .onSecondary,
+                                //   inactiveTrackColor: agrimetStations.color,
+                                // ),
+                                // Center(
+                                //   child: Text(
+                                //     showHydroMet ? 'HydroMet' : 'AgriMet',
+                                //     style: TextStyle(color: Colors.black),
+                                //   ),
+                                // ),
+                              ],
                             ))
                             : Container(),
                       ],
