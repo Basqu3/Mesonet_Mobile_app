@@ -49,136 +49,150 @@ class _PrecipState extends State<Precip> {
             padding: EdgeInsets.only(bottom: 0),
           shrinkWrap: true,
           children: [
-            
+            if (snapshot.data?.twentyFourHourPPT != null)
+                if (snapshot.data?.twentyFourHourPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                      '24 Hour Precipitation:',
+                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                      ),
+                    ),
+                    Text(
+                      '${snapshot.data!.twentyFourHourPPT} in',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                    ),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('24 Hour Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.twentyFourHourPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.sevenDayPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('7 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.sevenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('7 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.sevenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.fourteenDayPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('14 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.fourteenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('14 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.fourteenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.thirtyDayPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('30 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.thirtyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('30 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.thirtyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.ninetyDayPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('90 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.ninetyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('90 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.ninetyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.PPTsinceMidnight != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Precipitation Since Midnight:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.PPTsinceMidnight} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('Precipitation Since Midnight:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.PPTsinceMidnight} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
-                ),
+                if (snapshot.data?.YTDPPT != null)
                 Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                children: [
-                FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ),
-                Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                ],
-                ),
-                ),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ),
+                    Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                    ],
+                  ),
+                  ),
                 ),
             ]
-          
-          
+
+
                     );
         } else {
             return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
@@ -186,7 +200,7 @@ class _PrecipState extends State<Precip> {
       },
       
     ) //Switch case for agrimet stations. Have to derive the precip manually
-    : Center(child: Text('No Precip Data Available',textAlign: TextAlign.center,
+    : Center(child: Text('No Derived Precip Data Available for Agrimet Stations',textAlign: TextAlign.center,
     style: TextStyle(
       color: widget.isHydromet
       ? Theme.of(context).colorScheme.onPrimary

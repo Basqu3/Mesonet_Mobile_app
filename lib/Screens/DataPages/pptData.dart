@@ -4,11 +4,11 @@ class pptData {
   String station;
   double? ninetyDayPPT;
   double? thirtyDayPPT;
-  double YTDPPT;
-  double fourteenDayPPT;
-  double sevenDayPPT;
-  double twentyFourHourPPT;
-  double PPTsinceMidnight;
+  double? YTDPPT;
+  double? fourteenDayPPT;
+  double? sevenDayPPT;
+  double? twentyFourHourPPT;
+  double? PPTsinceMidnight;
 
   pptData({
     required this.station,
@@ -24,13 +24,13 @@ class pptData {
   factory pptData.fromJson(Map<String,dynamic> json) {
     return pptData(
       station: json['station'],
-      ninetyDayPPT: json['90-day Precipitation [in]'] ?? 0.0,
-      thirtyDayPPT: json['30-day Precipitation [in]']  ?? 0.0,
-      YTDPPT: json['Year to Date Precipitation [in]'] ?? 0.0,
-      fourteenDayPPT: json['14-day Precipitation [in]'] ?? 0.0,
-      sevenDayPPT: json['7-day Precipitation [in]'] ?? 0.0,
-      twentyFourHourPPT: json['24-hour Precipitation [in]'] ?? 0.0,
-      PPTsinceMidnight: json['Precipitation Since Midnight [in]'] ?? 0.0,
+      ninetyDayPPT: json['90-day Precipitation [in]'],
+      thirtyDayPPT: json['30-day Precipitation [in]'],
+      YTDPPT: json['Year to Date Precipitation [in]'],
+      fourteenDayPPT: json['14-day Precipitation [in]'],
+      sevenDayPPT: json['7-day Precipitation [in]'],
+      twentyFourHourPPT: json['24-hour Precipitation [in]'],
+      PPTsinceMidnight: json['Precipitation Since Midnight [in]'],
     );
   }
 }
