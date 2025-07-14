@@ -1415,121 +1415,113 @@ class _ChartmanagerState extends State<Chartmanager> {
       color: widget.isHydromet
           ? Theme.of(context).colorScheme.primary
           : Theme.of(context).colorScheme.secondary,
-      child: FutureBuilder(
+      child: FutureBuilder<List<FlSpot>>(
         future: dataSpot('precipitation'),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-                child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.onPrimary));
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            );
           } else {
-            double maxY =
-                snapshot.data!.map((spot) => spot.y).reduce((a, b) => a + b);
+            final spots = snapshot.data!;
+            // Group data by day for bar chart
+            final Map<String, double> dailyPrecip = {};
+            for (var spot in spots) {
+              final date = DateFormat('yyyy-MM-dd').format(
+                DateTime.fromMillisecondsSinceEpoch(spot.x.toInt()),
+              );
+              dailyPrecip[date] = (dailyPrecip[date] ?? 0) + spot.y;
+            }
+            final barSpots = dailyPrecip.entries.toList();
+
+            double maxY = barSpots.map((e) => e.value).fold(0.0, (a, b) => a > b ? a : b);
+
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: BarChart(
                 BarChartData(
                   minY: 0,
-                  maxY: maxY,
+                  maxY: maxY + 0.1,
                   titlesData: FlTitlesData(
-                      topTitles: AxisTitles(
-                          axisNameWidget: Text(
-                            "Precipitation",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          axisNameSize: 26),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          getTitlesWidget: (value, meta) {
-                            int index = value.toInt();
-                            if (index < snapshot.data!.length) {
-                              double interval =
-                                  (snapshot.data!.length / 10).ceilToDouble();
-                              int middleIndex =
-                                  ((index * interval) + (interval / 2)).toInt();
-                              DateTime date =
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      snapshot.data![middleIndex].x.toInt());
-                              if (shortTimeSpan!) {
-                                return Transform.rotate(
-                                  angle: (pi / 4),
-                                  alignment: Alignment.topLeft,
-                                  child: Transform.translate(
-                                    offset: Offset(14, -5),
-                                    child: Text(
-                                      DateFormat('MM-dd - HH:00').format(date),
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Transform.rotate(
-                                  angle: (pi / 4),
-                                  alignment: Alignment.topLeft,
-                                  child: Transform.translate(
-                                    offset: Offset(10, -5),
-                                    child: Text(
-                                      DateFormat('MM-dd').format(date),
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                );
-                              }
-                            } else {
-                              return Container();
-                            }
-                          },
-                          reservedSize: shortTimeSpan! ? 75 : 40,
-                          showTitles: true,
-                          maxIncluded: false,
-                          minIncluded: false,
+                    topTitles: AxisTitles(
+                      axisNameWidget: Text(
+                        "Precipitation",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      leftTitles: AxisTitles(
-                          axisNameWidget: Text(
-                            'Precipitation [in]',
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 52,
-                            maxIncluded: false,
-                            minIncluded: false,
-                          )),
-                      rightTitles: AxisTitles(
-                          sideTitles: SideTitles(
+                      axisNameSize: 26,
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        getTitlesWidget: (value, meta) {
+                          int index = value.toInt();
+                          if (index < barSpots.length) {
+                            final date = DateTime.parse(barSpots[index].key);
+                            return Transform.rotate(
+                              angle: (pi / 4),
+                              alignment: Alignment.topLeft,
+                              child: Transform.translate(
+                                offset: Offset(shortTimeSpan! ? 14 : 10, -5),
+                                child: Text(
+                                  shortTimeSpan!
+                                      ? DateFormat('MM-dd').format(date)
+                                      : DateFormat('MM-dd').format(date),
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        },
+                        reservedSize: shortTimeSpan! ? 75 : 40,
+                        showTitles: true,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      axisNameWidget: Text(
+                        'Precipitation [in]',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 52,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(
                         showTitles: false,
                         reservedSize: 48,
                         maxIncluded: false,
                         minIncluded: false,
-                      ))),
-                  backgroundColor: Theme.of(context)
-                      .colorScheme
-                      .surfaceBright, //pick something better for colors
-                  barGroups: List.generate(7, (i) {
-                    double interval =
-                        (snapshot.data!.length / 7).ceilToDouble();
-                    double sumYInInterval = snapshot.data!
-                        .skip((i * interval).toInt())
-                        .take(interval.toInt())
-                        .map((spot) => spot.y)
-                        .reduce((a, b) => a + b);
+                      ),
+                    ),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                  barGroups: List.generate(barSpots.length, (i) {
                     return BarChartGroupData(
                       x: i,
                       barRods: [
                         BarChartRodData(
                           fromY: 0,
-                          toY: double.parse(
-                              sumYInInterval.toStringAsPrecision(4)),
+                          toY: double.parse(barSpots[i].value.toStringAsFixed(3)),
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ],
                     );
                   }),
+                  gridData: FlGridData(show: true),
+                  borderData: FlBorderData(show: false),
                 ),
               ),
             );
