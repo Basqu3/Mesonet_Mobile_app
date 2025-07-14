@@ -82,8 +82,8 @@ class Data {
     bulkEC100: json['Bulk EC @ -100 cm [mS/cm]'] ?? json['Bulk EC @ -91 cm [mS/cm]'],
     solarRadiation: json['Solar Radiation [W/m²]'],
     windDirection: json['Wind Direction @ 10 m [deg]'] ?? json['Wind Direction @ 8 ft [deg]'],
-    windSpeed: json['Wind Speed @ 10 m [mi/hr]'] ?? json['Wind Speed @ 8 ft [mi/hr]'],
-    gustSpeed: json['Gust Speed @ 10 m [mi/hr]'] ?? json['Gust Speed @ 8 ft [mi/hr]'],
+    windSpeed: json['Wind Speed @ 10 m [mi/h]'] ?? json['Wind Speed @ 8 ft [mi/h]'],
+    gustSpeed: json['Gust Speed @ 10 m [mi/h]'] ?? json['Gust Speed @ 8 ft [mi/h]'],
     snowDepth: json['Snow Depth [in]'],
       );
   }

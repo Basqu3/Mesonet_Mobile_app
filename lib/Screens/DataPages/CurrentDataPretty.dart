@@ -45,6 +45,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
     _dataFuture = getData(
         'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
     _dataFuture.then((value) {
+      print('CurrentDataPretty: ${widget.id}');
       if (!isCurrentDate(value.datetime!) && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -394,8 +395,15 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       ),
                                       Expanded(
                                           child: Center(
-                                        child: Text(
+                                        child: (snapshot.data!.windSpeed != null) 
+                                        ? Text(
                                           '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15),
+                                        )
+                                        : Text(
+                                          'Wind Speed N/A',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15),
