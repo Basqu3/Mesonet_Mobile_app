@@ -119,8 +119,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                               child: Card(
                                 clipBehavior: Clip.hardEdge,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 child: Stack(
                                   children: [
                                     widget.isHydromet
@@ -190,8 +190,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.secondary,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -243,8 +243,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                 ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.secondary,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                               ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Stack(children: [
@@ -295,9 +295,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                                 .colorScheme
                                                 .secondary,
                                         shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                         child: Padding(
                                             padding: const EdgeInsets.all(5.0),
                                             child: Alerts(
@@ -318,9 +318,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                                 .colorScheme
                                                 .secondary,
                                         shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Stack(children: [
@@ -365,8 +365,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       ? Theme.of(context).colorScheme.primary
                                       : Theme.of(context).colorScheme.secondary,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -395,19 +395,20 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       ),
                                       Expanded(
                                           child: Center(
-                                        child: (snapshot.data!.windSpeed != null) 
-                                        ? Text(
-                                          '${snapshot.data!.windSpeed!.toString()} Mi/hr',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        )
-                                        : Text(
-                                          'Wind Speed N/A',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        ),
+                                        child:
+                                            (snapshot.data!.windSpeed != null)
+                                                ? Text(
+                                                    '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  )
+                                                : Text(
+                                                    'Wind Speed N/A',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  ),
                                       ))
                                     ],
                                   ),

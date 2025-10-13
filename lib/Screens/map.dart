@@ -288,7 +288,9 @@ class _mapState extends State<map> {
   Future<List<StationMarker>> getFavoriteStationList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonStringList = prefs.getString('favorites');
-    Map<String, dynamic> jsonMAP = jsonDecode(jsonStringList??""); //no null safe
+    Map<String, dynamic> jsonMAP = jsonStringList != null && jsonStringList.isNotEmpty
+      ? jsonDecode(jsonStringList)
+      : {"stations": []};
     List<StationMarker> jsonStationList = [];
     for (int i = 0; i < (jsonMAP['stations'].length); i++) {
       jsonStationList.add(StationMarker(
@@ -320,8 +322,8 @@ class _mapState extends State<map> {
   }
 
   bool isCurrentDate(int dateFromData) {
-    DateTime now = DateTime.now();
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData);
+    DateTime now = DateTime.now().toUtc();
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData, isUtc: true);
 
     return now.day == date.day &&
         now.month == date.month &&
