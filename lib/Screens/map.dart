@@ -77,13 +77,14 @@ class _mapState extends State<map> {
   late bool showHydroMet;
   late bool showAgrimet;
 
+  List<StationMarker> favoriteStations = [];
+
   //Defaults are set in initState
   @override
   void initState() {
     super.initState();
     stationList = [];
     WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
-    WidgetsBinding.instance.addPostFrameCallback((_) => getStations());
     mapController = MapController();
     _markerSize = 14.0; // Default marker size
 
@@ -99,7 +100,7 @@ class _mapState extends State<map> {
       size: _markerSize,
     );
 
-    getFavoriteStationList();
+    WidgetsBinding.instance.addPostFrameCallback((_) => loadInitialData());
 
     maxTemp = -999.99; //force these to change when called by findRange
     minTemp = 999.99; //need to init to avoid error
@@ -131,6 +132,18 @@ class _mapState extends State<map> {
         .toList();
   }
 
+  Future<void> loadInitialData() async {
+    try {
+      await getStations(); // fills stationList
+      await loadFavorites(); // fills favoriteStations and setState inside
+      await getMarkers(); // optional: ensure marker-related calculations run
+    } catch (_) {
+      // ignore errors here; FutureBuilder will handle later
+    }
+    // ensure UI updates once after all loads
+    if (mounted) setState(() {});
+  }
+
   List<Marker> parseToMarkers(List<StationMarker> stationList) {
     List<Marker> markers = [];
     for (StationMarker station in stationList) {
@@ -147,23 +160,26 @@ class _mapState extends State<map> {
                   builder: (context) =>
                       HydroStationPage(station: station, hydroBool: 1),
                 ),
-              );
+              ).then((_) {
+                if (mounted) loadFavorites();
+              });
             },
-            onLongPress: () {  //pop up text? 
+            onLongPress: () {
+              //pop up text?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('Station Information'),
-                    content: Text('Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
+                    content: Text(
+                        'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
                         'Station Name: ${station.name}\n'
                         'Station ID: ${station.id}\n'
                         'Latitude: ${station.lat}*\n'
                         'Longitude: ${station.lon}*\n'
                         'Air Temperature: ${station.air_temp}°F\n'
                         '7-Day Precipitation: ${station.precipSummary}"\n\n'
-                        '*Latitude and Longitude are approximate.'
-                        ),
+                        '*Latitude and Longitude are approximate.'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
@@ -204,23 +220,25 @@ class _mapState extends State<map> {
                   builder: (context) =>
                       HydroStationPage(station: station, hydroBool: 0),
                 ),
-              );
+              ).then((_) {
+                if (mounted) loadFavorites();
+              });
             },
-            onLongPress: () {  //pop up text? 
+            onLongPress: () {
+              //pop up text?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    
                     title: Text('Station Information'),
-                    content: Text('Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!)) }\n'
+                    content: Text(
+                        'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
                         'Station Name: ${station.name}\n'
                         'Station ID: ${station.id}\n'
                         'Latitude: ${station.lat}*\n'
                         'Longitude: ${station.lon}*\n'
                         'Air Temperature: ${station.air_temp}°F\n\n'
-                        '*Latitude and Longitude are approximate.'
-                        ),
+                        '*Latitude and Longitude are approximate.'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
@@ -236,10 +254,9 @@ class _mapState extends State<map> {
             child: Icon(
               Icons.star,
               color: isCurrentDate(station.date!)
-                  ?
-                showAggragateDataMarkers
-                    ? setMarkerColor(station.air_temp!, true)
-                    : Color.fromARGB(255, 53, 110, 91)
+                  ? showAggragateDataMarkers
+                      ? setMarkerColor(station.air_temp!, true)
+                      : Color.fromARGB(255, 53, 110, 91)
                   : Colors.black54,
               size: _markerSize,
             ),
@@ -285,28 +302,63 @@ class _mapState extends State<map> {
     return stationList;
   }
 
+  Future<void> loadFavorites() async {
+    favoriteStations = await getFavoriteStationList();
+    setState(() {}); // one place to update UI
+  }
+
   Future<List<StationMarker>> getFavoriteStationList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jsonStringList = prefs.getString('favorites');
-    Map<String, dynamic> jsonMAP = jsonStringList != null && jsonStringList.isNotEmpty
-      ? jsonDecode(jsonStringList)
-      : {"stations": []};
-    List<StationMarker> jsonStationList = [];
-    for (int i = 0; i < (jsonMAP['stations'].length); i++) {
-      jsonStationList.add(StationMarker(
-        name: jsonMAP['stations'][i]['name'],
-        id: jsonMAP['stations'][i]['id'],
-        subNetwork: jsonMAP['stations'][i]['sub_network'],
-        lat: jsonMAP['stations'][i]['lat'],
-        lon: jsonMAP['stations'][i]['lon'],
-        air_temp: jsonMAP['stations'][i]['air_temp'],
-        precipSummary: jsonMAP['stations'][i]['precipSummary'],
-        date: jsonMAP['stations'][i]['date'],
-      ));
+    final String? jsonStringList = prefs.getString('favorites');
+    if (jsonStringList == null || jsonStringList.isEmpty) {
+      return <StationMarker>[];
     }
-    setState(() {}); // Call setState once after the loop
+    final Map<String, dynamic> jsonMAP =
+        jsonDecode(jsonStringList) as Map<String, dynamic>;
+    final List<dynamic> raw = (jsonMAP['stations'] is List)
+        ? jsonMAP['stations'] as List<dynamic>
+        : <dynamic>[];
+    final List<StationMarker> jsonStationList = raw.map((item) {
+      final Map<String, dynamic> m = Map<String, dynamic>.from(item as Map);
+      return StationMarker(
+        name: m['name']?.toString() ?? 'Unknown',
+        id: m['id']?.toString() ?? '',
+        subNetwork: m['sub_network']?.toString() ?? '',
+        lat: (m['lat'] is num) ? (m['lat'] as num).toDouble() : 0.0,
+        lon: (m['lon'] is num) ? (m['lon'] as num).toDouble() : 0.0,
+        air_temp:
+            (m['air_temp'] is num) ? (m['air_temp'] as num).toDouble() : null,
+        precipSummary: (m['precipSummary'] is num)
+            ? (m['precipSummary'] as num).toDouble()
+            : null,
+        date: (m['date'] is num) ? (m['date'] as num).toInt() : null,
+      );
+    }).toList();
     return jsonStationList;
   }
+
+  // Future<List<StationMarker>> getFavoriteStationList() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? jsonStringList = prefs.getString('favorites');
+  //   Map<String, dynamic> jsonMAP = jsonStringList != null && jsonStringList.isNotEmpty
+  //     ? jsonDecode(jsonStringList)
+  //     : {"stations": []};
+  //   List<StationMarker> jsonStationList = [];
+  //   for (int i = 0; i < (jsonMAP['stations'].length); i++) {
+  //     jsonStationList.add(StationMarker(
+  //       name: jsonMAP['stations'][i]['name'],
+  //       id: jsonMAP['stations'][i]['id'],
+  //       subNetwork: jsonMAP['stations'][i]['sub_network'],
+  //       lat: jsonMAP['stations'][i]['lat'],
+  //       lon: jsonMAP['stations'][i]['lon'],
+  //       air_temp: jsonMAP['stations'][i]['air_temp'],
+  //       precipSummary: jsonMAP['stations'][i]['precipSummary'],
+  //       date: jsonMAP['stations'][i]['date'],
+  //     ));
+  //   }
+  //   setState(() {}); // Call setState once after the loop
+  //   return jsonStationList;
+  // }
 
   void _updateMarkerSize(double zoom) {
     if (zoom > 6.4) {
@@ -323,47 +375,49 @@ class _mapState extends State<map> {
 
   bool isCurrentDate(int dateFromData) {
     DateTime now = DateTime.now().toUtc();
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateFromData, isUtc: true);
+    DateTime date =
+        DateTime.fromMillisecondsSinceEpoch(dateFromData, isUtc: true);
 
-    return now.day == date.day &&
-        now.month == date.month &&
-        now.year == date.year;
+    if (date.millisecondsSinceEpoch == 999) {
+      //null out in api is 999
+      return true; // 1970-01-01 00:00:00.999Z is /app null for date time. Current work around
+    }
+
+    return date.isAfter(now.subtract(const Duration(hours: 2)));
   }
 
   void findRange(List<StationMarker> stationList) {
-    minTemp = 999.00;
-    maxTemp = -999.00;
-    maxPrecip = -1;
+    minTemp = double.infinity;
+    maxTemp = double.negativeInfinity;
+    maxPrecip = -1.0;
     //set global variables. Call from get markers
-    for (StationMarker station in stationList) {
-      if (station.air_temp == null || station.air_temp == 999.00) {
+    for (final station in stationList) {
+      // only consider HydroMet and recent records
+      if (station.subNetwork != 'HydroMet' || station.date == null || !isCurrentDate(station.date!)) {
         continue;
       }
 
-      if (station.precipSummary == null || station.precipSummary == 999.00) {
-        continue;
+      // update temp range if valid
+      final double? t = station.air_temp;
+      if (t != null && t != 999.00) {
+        if (t > maxTemp) maxTemp = t;
+        if (t < minTemp) minTemp = t;
       }
 
-      if (station.air_temp! > maxTemp &&
-          station.subNetwork == 'HydroMet' &&
-          isCurrentDate(station.date!)) {
-        //check max temp
-        maxTemp = station.air_temp!;
+      // update precip range independently
+      final double? p = station.precipSummary;
+      if (p != null && p != 999.00) {
+        if (p > maxPrecip) maxPrecip = p;
       }
+    }
 
-      if (station.air_temp! < minTemp &&
-          station.subNetwork == 'HydroMet' &&
-          isCurrentDate(station.date!)) {
-        //check min temp
-        minTemp = station.air_temp!;
-      }
-
-      if (station.precipSummary! > maxPrecip &&
-          station.subNetwork == 'HydroMet' &&
-          isCurrentDate(station.date!)) {
-        //check precip
-        maxPrecip = station.precipSummary!;
-      }
+    // fallback sensible ranges if no data found
+    if (minTemp == double.infinity || maxTemp == double.negativeInfinity) {
+      minTemp = 0.0;
+      maxTemp = 31.99; // choose a reasonable fallback
+    }
+    if (maxPrecip < 0) {
+      maxPrecip = 1.0; // avoid zero-length precip range
     }
   }
 
@@ -450,14 +504,13 @@ class _mapState extends State<map> {
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: FloatingActionButton(
-            backgroundColor: (!showHydroMet&&showAgrimet)
+            backgroundColor: (!showHydroMet && showAgrimet)
                 ? Theme.of(context).colorScheme.secondaryContainer
                 : Theme.of(context).colorScheme.primaryContainer,
-
             onPressed: () {
               setState(() {
                 markerindex += 1;
-                if (showHydroMet&&!showAgrimet) {
+                if (showHydroMet && !showAgrimet) {
                   markerindex = markerindex % 3;
                 } else {
                   markerindex = markerindex % 2;
@@ -472,7 +525,7 @@ class _mapState extends State<map> {
                   child: Container(),
                 );
               },
-              ),
+            ),
           ),
           appBar: AppBar(
             leading: Builder(builder: (context) {
@@ -498,60 +551,39 @@ class _mapState extends State<map> {
             ),
           ),
           drawer: Drawer(
-            child: FutureBuilder(
-                future: getFavoriteStationList(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    //print(snapshot.data);
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    List<StationMarker> stationList =
-                        snapshot.data as List<StationMarker>;
-
-                    return (stationList.isEmpty)
-                        ? const Center(
-                            child: Text('No Favorites'),
-                          )
-                        : ListView.builder(
-                            padding: EdgeInsets.all(10),
-                            itemCount: stationList.length,
-                            itemBuilder: (context, index) {
-                              StationMarker station = stationList[index];
-
-                              return ListTile(
-                                leading: Icon(
-                                  station.subNetwork == "HydroMet"
-                                      ? hydrometStations.icon
-                                      : agrimetStations.icon,
-                                  color: station.subNetwork == "HydroMet"
-                                      ? hydrometStations.color
-                                      : agrimetStations.color,
+            child: favoriteStations.isEmpty
+                ? const Center(child: Text('No Favorites'))
+                : ListView.builder(
+                    padding: EdgeInsets.all(10),
+                    itemCount: favoriteStations.length,
+                    itemBuilder: (context, index) {
+                      final station = favoriteStations[index];
+                      return ListTile(
+                        leading: Icon(
+                          station.subNetwork == "HydroMet"
+                              ? hydrometStations.icon
+                              : agrimetStations.icon,
+                          color: station.subNetwork == "HydroMet"
+                              ? hydrometStations.color
+                              : agrimetStations.color,
+                        ),
+                        title: Text(station.name),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HydroStationPage(
+                                  station: station,
+                                  hydroBool:
+                                      station.subNetwork == "HydroMet" ? 1 : 0,
                                 ),
-                                title: Text(station.name),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HydroStationPage(
-                                        station: station,
-                                        hydroBool:
-                                            station.subNetwork == "HydroMet"
-                                                ? 1
-                                                : 0,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            });
-                  }
-                }),
+                              )).then((_) {
+                            if (mounted) loadFavorites();
+                          });
+                        },
+                      );
+                    },
+                  ),
           ),
           endDrawer: Drawer(
             child: FutureBuilder(
@@ -589,7 +621,9 @@ class _mapState extends State<map> {
                                       station.subNetwork == "HydroMet" ? 1 : 0,
                                 ),
                               ),
-                            );
+                            ).then((_) {
+                              if (mounted) loadFavorites();
+                            });
                           },
                         );
                       });
@@ -801,73 +835,76 @@ class _mapState extends State<map> {
                                 ),
                               )
                             : Container(),
+                        !showPrecipAggragateDataMarker
+                            ? Card(
+                                color: Colors.transparent,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ToggleSwitch(
+                                      isVertical: true,
+                                      minHeight: 20,
+                                      minWidth: 100,
+                                      initialLabelIndex:
+                                          (showAgrimet && showHydroMet)
+                                              ? 2
+                                              : (showHydroMet ? 1 : 0),
+                                      totalSwitches: 3,
+                                      labels: [
+                                        'AgriMet',
+                                        'HydroMet',
+                                        'All Stations'
+                                      ],
+                                      activeFgColor: Colors.white,
+                                      activeBgColors: [
+                                        [agrimetStations.color!],
+                                        [hydrometStations.color!],
+                                        [Colors.black54]
+                                      ],
+                                      inactiveBgColor: Colors.white,
+                                      onToggle: (index) {
+                                        setState(() {
+                                          if (index == 0) {
+                                            showHydroMet = false;
+                                            showAgrimet = true;
+                                          } else if (index == 1) {
+                                            showHydroMet = true;
+                                            showAgrimet = false;
+                                          } else {
+                                            showAgrimet = true;
+                                            showHydroMet = true;
+                                          }
+                                        });
+                                      },
+                                    ),
 
-                            !showPrecipAggragateDataMarker
-                        ?Card(
-                            color: Colors.transparent,
-                            child: Column(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceAround,
-                              children: [
-                            
-                                  ToggleSwitch(
-                                    isVertical: true,
-                                    minHeight: 20,
-                                    minWidth: 100,
-                                  initialLabelIndex: (showAgrimet&&showHydroMet)
-                                    ? 2
-                                    : (showHydroMet ? 1 : 0),
-                                  totalSwitches: 3,
-                                  labels: ['AgriMet', 'HydroMet', 'All Stations'],
-                                  activeFgColor: Colors.white,
-                                  activeBgColors: [
-                                    [agrimetStations.color!],
-                                    [hydrometStations.color!],
-                                    [Colors.black54]
+                                    // Switch(
+                                    //   value: showHydroMet,
+                                    //   onChanged: (value) {
+                                    //     setState(() {
+                                    //       showPrecipAggragateDataMarker = false;
+                                    //       showHydroMet = value;
+                                    //       //showAgrimet = value;
+                                    //       showAggragateDataMarkers = false;
+                                    //     });
+                                    //   },
+                                    //   activeColor:
+                                    //       Theme.of(context).colorScheme.onPrimary,
+                                    //   activeTrackColor: hydrometStations.color,
+                                    //   inactiveThumbColor: Theme.of(context)
+                                    //       .colorScheme
+                                    //       .onSecondary,
+                                    //   inactiveTrackColor: agrimetStations.color,
+                                    // ),
+                                    // Center(
+                                    //   child: Text(
+                                    //     showHydroMet ? 'HydroMet' : 'AgriMet',
+                                    //     style: TextStyle(color: Colors.black),
+                                    //   ),
+                                    // ),
                                   ],
-                                  inactiveBgColor: Colors.white,
-                                  onToggle: (index) {
-                                    setState(() {
-                                    if (index == 0) {
-                                      showHydroMet = false;
-                                      showAgrimet = true;
-                                    } else if (index == 1) {
-                                      showHydroMet = true;
-                                      showAgrimet = false;
-                                    } else {
-                                      showAgrimet = true;
-                                      showHydroMet = true;
-                                    }
-                                    });
-                                  },
-                                  ),
-                            
-                                // Switch(
-                                //   value: showHydroMet,
-                                //   onChanged: (value) {
-                                //     setState(() {
-                                //       showPrecipAggragateDataMarker = false;
-                                //       showHydroMet = value;
-                                //       //showAgrimet = value;
-                                //       showAggragateDataMarkers = false;
-                                //     });
-                                //   },
-                                //   activeColor:
-                                //       Theme.of(context).colorScheme.onPrimary,
-                                //   activeTrackColor: hydrometStations.color,
-                                //   inactiveThumbColor: Theme.of(context)
-                                //       .colorScheme
-                                //       .onSecondary,
-                                //   inactiveTrackColor: agrimetStations.color,
-                                // ),
-                                // Center(
-                                //   child: Text(
-                                //     showHydroMet ? 'HydroMet' : 'AgriMet',
-                                //     style: TextStyle(color: Colors.black),
-                                //   ),
-                                // ),
-                              ],
-                            ))
+                                ))
                             : Container(),
                       ],
                     ),
