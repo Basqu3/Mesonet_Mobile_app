@@ -15,7 +15,7 @@ class _HomeManagerState extends State<HomeManager> {
     const feedback(),
     map(),
     const about(),
-    //Streamflow(), //Add as soon as zach optimizes for mobile
+    const Streamflow(), //Add as soon as zach optimizes for mobile
   ];
 
   @override
@@ -23,9 +23,10 @@ class _HomeManagerState extends State<HomeManager> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+          unselectedItemColor: Theme.of(context).colorScheme.onTertiary,
+          selectedItemColor: Theme.of(context).colorScheme.tertiary,
           currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
@@ -47,10 +48,10 @@ class _HomeManagerState extends State<HomeManager> {
               icon: Icon(Icons.note),
               label: "About",
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.water),
-            //   label: "Streamflow",
-            // ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.water),
+              label: "Streamflow",
+            ),
           ]),
     );
   }
@@ -134,43 +135,43 @@ class _feedbackState extends State<feedback> {
     ));
   }
 }
-// class Streamflow extends StatefulWidget {
-//   const Streamflow({super.key});
+class Streamflow extends StatefulWidget {
+  const Streamflow({super.key});
 
-//   @override
-//   State<Streamflow> createState() => _StreamflowState();
-// }
+  @override
+  State<Streamflow> createState() => _StreamflowState();
+}
 
-// class _StreamflowState extends State<Streamflow> {
-//   late WebViewController controller;
+class _StreamflowState extends State<Streamflow> {
+  late WebViewController controller;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     controller = WebViewController()
-//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//       ..loadRequest(Uri.parse('https://streamflow.climate.umt.edu/'));
-//     NavigationDelegate(
-//       onNavigationRequest: (NavigationRequest request) {
-//         if (request.url.startsWith('https://streamflow.climate.umt.edu/')) {
-//           return NavigationDecision.navigate;
-//         }
-//         return NavigationDecision.prevent;
-//       },
-//     );
-//   }
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse('https://streamflow.climate.umt.edu/'));
+    NavigationDelegate(
+      onNavigationRequest: (NavigationRequest request) {
+        if (request.url.startsWith('https://streamflow.climate.umt.edu/')) {
+          return NavigationDecision.navigate;
+        }
+        return NavigationDecision.prevent;
+      },
+    );
+  }
 
-//   @override
-//   void dispose() {
-//     controller.loadRequest(Uri.parse('about:blank'));
-//     super.dispose();
-//   }
+  @override
+  void dispose() {
+    controller.loadRequest(Uri.parse('about:blank'));
+    super.dispose();
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//         child: WebViewWidget(
-//       controller: controller,
-//     ));
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: WebViewWidget(
+      controller: controller,
+    ));
+  }
+}

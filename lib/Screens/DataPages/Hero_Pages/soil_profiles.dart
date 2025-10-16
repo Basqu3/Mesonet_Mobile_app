@@ -29,8 +29,8 @@ class _soil_profilesState extends State<soil_profiles> {
       widget.data.soilTemperature50 ?? 0.0,
       widget.data.soilTemperature100 ?? 0.0,
     ];
-
-    return [range.reduce(max) + 5, range.reduce(min) - 5];
+    final List<double> b = range.whereType<double>().toList(); //removes nulls
+    return [b.reduce(max) + 5, b.reduce(min) - 5];
   }
 
   Color getGradientColors(double input, bool temperatureBool) {

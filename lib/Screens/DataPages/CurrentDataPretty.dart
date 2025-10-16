@@ -381,30 +381,31 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: AspectRatio(
-                                          aspectRatio: 1 / 1,
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'lib/assets/cadrant.png',
-                                              ),
-                                              Transform.rotate(
-                                                angle: snapshot.data!
-                                                    .windDirection as double,
-                                                child: Image.asset(
-                                                  'lib/assets/compass.png',
-                                                  scale: 2.0,
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: AspectRatio(
+                                            aspectRatio: 1 / 1,
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'lib/assets/cadrant.png',
                                                 ),
-                                              )
-                                            ],
+                                                Transform.rotate(
+                                                  angle: snapshot.data!
+                                                      .windDirection as double,
+                                                  child: Image.asset(
+                                                    'lib/assets/compass.png',
+                                                    scale: 2.0,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                          child: Center(
+                                      Center(
                                         child:
                                             (snapshot.data!.windSpeed != null)
                                                 ? Text(
@@ -419,9 +420,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                                         color: Colors.white,
                                                         fontSize: 14),
                                                   ),
-                                      )),
-                                      // Padding(padding: EdgeInsets.only(bottom: 2))
-
+                                      ),
+                                      Padding(padding: EdgeInsets.only(bottom: 2))
                                     ],
                                   ),
                                 ),

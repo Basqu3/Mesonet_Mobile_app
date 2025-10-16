@@ -31,42 +31,48 @@ DOCS: Setting light and dark color schemes for the app.
 
 const ColorScheme lightColorScheme = ColorScheme(
     primary: Color(0xff0073A2),
-    onPrimary: Colors.white70,
+    onPrimary: Color(0xffffffed),
     primaryContainer: Color(0xff8FD1E9),
-    onPrimaryContainer: Colors.black54,
+    onPrimaryContainer: Color(0xff121212),
     onPrimaryFixed: Colors.white,
 
     secondary:  Color.fromARGB(255, 11, 129, 90),
-    onSecondary: Colors.white70,
+    onSecondary:Color(0xffffffed),
     secondaryContainer: Color(0xff9FD3BF),
-    onSecondaryContainer: Colors.black54,
+    onSecondaryContainer: Color(0xff121212),
+
+    tertiary: Color(0xffffffed),
+    onTertiary: Colors.white38,
 
     error: Colors.redAccent,
     onError: Colors.white,
 
     surface: Color(0xffcbcbcb),
-    onSurface: Colors.black54,
+    onSurface: Color(0xff121212),
 
     brightness: Brightness.light,
   );
 
 const ColorScheme darkColorScheme = ColorScheme(
     primary: Color(0xff0073A2),
-    onPrimary: Colors.white70,
+    onPrimary: Color(0xffffffed),
     primaryContainer: Color(0xff8FD1E9),
-    onPrimaryContainer: Colors.black54,
+    onPrimaryContainer: Color(0xff121212),
     onPrimaryFixed: Colors.white,
 
     secondary: Color.fromARGB(255, 53, 110, 91),
-    onSecondary: Colors.white70,
+    onSecondary: Color(0xffffffed),
     secondaryContainer: Color(0xff9FD3BF),
-    onSecondaryContainer: Colors.black54,
+    onSecondaryContainer: Color(0xff121212),
+
+    tertiary: Color(0xffffffed),
+    onTertiary: Colors.white38,
 
     error: Colors.redAccent,
     onError: Colors.white,
 
-    surface: Color.fromARGB(255, 150, 150, 150),
-    onSurface: Colors.black87,
+    surface: Color(0xff121212),
+    onSurface: Color(0xff121212),
     
     brightness: Brightness.dark,
   );

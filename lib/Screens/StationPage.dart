@@ -224,10 +224,10 @@ class _HydroStationPageState extends State<HydroStationPage> {
                                     backgroundColor: _activePage == index
                                         ? Theme.of(context)
                                             .colorScheme
-                                            .onPrimary
+                                            .tertiary
                                         : Theme.of(context)
                                             .colorScheme
-                                            .onPrimaryContainer,
+                                            .onTertiary,
                                   ),
                                 ),
                               ))),
