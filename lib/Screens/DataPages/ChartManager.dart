@@ -2138,6 +2138,8 @@ class _ChartmanagerState extends State<Chartmanager> {
                             DateTime.parse(barSpots[group.x.toInt()].key);
                         final value = rod.toY;
                         return BarTooltipItem(
+                          (shortTimeSpan!) ?
+                          '${DateFormat('MM-dd - HH:mm').format(date)}\n$value in' :
                           '${DateFormat('MM-dd-yyyy').format(date)}\n$value in',
                           TextStyle(
                             color: Theme.of(context).colorScheme.onPrimary,
