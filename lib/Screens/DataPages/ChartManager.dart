@@ -8,7 +8,6 @@ import 'package:latlong2/latlong.dart';
 import 'JSONData.dart';
 import 'package:flutter/foundation.dart';
 
-
 /*DOCS: Floating action button will hold date range and check boxes 
         Have function to check date range, bools then add to list of functions
         Have to call json here; parse and pass data from here?
@@ -513,8 +512,8 @@ class _ChartmanagerState extends State<Chartmanager> {
               padding: const EdgeInsets.all(5.0),
               child: LineChart(
                 LineChartData(
-                  minY: 0,
-                  maxY: maxY * 1.25,
+                  minY: -.1,
+                  maxY: (maxY >= 1) ? maxY * 1.25 : 1,
                   titlesData: FlTitlesData(
                       topTitles: AxisTitles(
                           axisNameWidget: Text(
@@ -835,7 +834,7 @@ class _ChartmanagerState extends State<Chartmanager> {
               padding: const EdgeInsets.all(5.0),
               child: LineChart(
                 LineChartData(
-                  minY: minY * .9,
+                  minY: (minY < 0 ? minY * .9 : -20),
                   maxY: maxY * 1.1,
                   titlesData: FlTitlesData(
                       topTitles: AxisTitles(
@@ -1171,7 +1170,7 @@ class _ChartmanagerState extends State<Chartmanager> {
                   Expanded(
                     child: LineChart(
                       LineChartData(
-                        minY: minY - 5,
+                        minY: (minY > 5) ? minY - 5 : -2.5,
                         maxY: maxY + 5,
                         titlesData: FlTitlesData(
                             topTitles: AxisTitles(
@@ -1330,15 +1329,28 @@ class _ChartmanagerState extends State<Chartmanager> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: [
-                        if (widget.isHydromet)
-                          LegendItem(color: Colors.red, text: '2"'),
-                        LegendItem(color: Colors.blue, text: '4"'),
-                        LegendItem(color: Colors.green, text: '8"'),
-                        LegendItem(color: Colors.orange, text: '20"'),
-                        LegendItem(color: Colors.purple, text: '40"'),
+                        Center(
+                          child: Text(
+                            'Soil Depth',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (widget.isHydromet)
+                              LegendItem(color: Colors.red, text: '2"'),
+                            LegendItem(color: Colors.blue, text: '4"'),
+                            LegendItem(color: Colors.green, text: '8"'),
+                            LegendItem(color: Colors.orange, text: '20"'),
+                            LegendItem(color: Colors.purple, text: '40"'),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -1385,7 +1397,7 @@ class _ChartmanagerState extends State<Chartmanager> {
                   Expanded(
                     child: LineChart(
                       LineChartData(
-                        minY: minY - 5,
+                        minY: (minY > 5) ? minY - 5 : -2.5,
                         maxY: maxY + 5,
                         titlesData: FlTitlesData(
                             topTitles: AxisTitles(
@@ -1544,15 +1556,28 @@ class _ChartmanagerState extends State<Chartmanager> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: [
-                        if (widget.isHydromet)
-                          LegendItem(color: Colors.red, text: '2"'),
-                        LegendItem(color: Colors.blue, text: '4"'),
-                        LegendItem(color: Colors.green, text: '8"'),
-                        LegendItem(color: Colors.orange, text: '20"'),
-                        LegendItem(color: Colors.purple, text: '40"'),
+                        Center(
+                          child: Text(
+                            'Soil Depth',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (widget.isHydromet)
+                              LegendItem(color: Colors.red, text: '2"'),
+                            LegendItem(color: Colors.blue, text: '4"'),
+                            LegendItem(color: Colors.green, text: '8"'),
+                            LegendItem(color: Colors.orange, text: '20"'),
+                            LegendItem(color: Colors.purple, text: '40"'),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -1599,7 +1624,7 @@ class _ChartmanagerState extends State<Chartmanager> {
                   Expanded(
                     child: LineChart(
                       LineChartData(
-                        minY: minY * 0.9,
+                        minY: (minY > 0.01) ? minY * 0.9 : -.025,
                         maxY: maxY * 1.1,
                         titlesData: FlTitlesData(
                             topTitles: AxisTitles(
@@ -1614,6 +1639,8 @@ class _ChartmanagerState extends State<Chartmanager> {
                                 axisNameSize: 26),
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
+                                minIncluded: false,
+                                maxIncluded: false,
                                 getTitlesWidget: (value, meta) {
                                   if (shortTimeSpan!) {
                                     return Transform.rotate(
@@ -1648,8 +1675,6 @@ class _ChartmanagerState extends State<Chartmanager> {
                                 },
                                 reservedSize: shortTimeSpan! ? 75 : 40,
                                 showTitles: true,
-                                maxIncluded: false,
-                                minIncluded: false,
                               ),
                             ),
                             leftTitles: AxisTitles(
@@ -1758,15 +1783,28 @@ class _ChartmanagerState extends State<Chartmanager> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: [
-                        if (widget.isHydromet)
-                          LegendItem(color: Colors.red, text: '2"'),
-                        LegendItem(color: Colors.blue, text: '4"'),
-                        LegendItem(color: Colors.green, text: '8"'),
-                        LegendItem(color: Colors.orange, text: '20"'),
-                        LegendItem(color: Colors.purple, text: '40"'),
+                        Center(
+                          child: Text(
+                            'Soil Depth',
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (widget.isHydromet)
+                              LegendItem(color: Colors.red, text: '2"'),
+                            LegendItem(color: Colors.blue, text: '4"'),
+                            LegendItem(color: Colors.green, text: '8"'),
+                            LegendItem(color: Colors.orange, text: '20"'),
+                            LegendItem(color: Colors.purple, text: '40"'),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -1985,136 +2023,143 @@ class _ChartmanagerState extends State<Chartmanager> {
 
             return Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: BarChart(
-                  BarChartData(
-                    minY: 0,
-                    maxY: maxY * 1.25,
-                    titlesData: FlTitlesData(
-                      topTitles: AxisTitles(
-                        axisNameWidget: Text(
-                          "Precipitation",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w700,
-                          ),
+                child: BarChart(BarChartData(
+                  minY: -.0025,
+                  maxY: maxY * 1.15,
+                  titlesData: FlTitlesData(
+                    topTitles: AxisTitles(
+                      axisNameWidget: Text(
+                        "Precipitation",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.w700,
                         ),
-                        axisNameSize: 26,
                       ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: shortTimeSpan! ? 75 : 40,
-                          // compute an integer interval (~6 labels across)
-                          interval: (barSpots.length <= 6)
-                              ? 1.0
-                              : (barSpots.length / 6).ceilToDouble(),
-                          getTitlesWidget: (value, meta) {
-                            // treat value as an integer bar index
-                            final int idx = value.round();
-                            if (idx < 0 || idx >= barSpots.length)
-                              return Container();
+                      axisNameSize: 26,
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: shortTimeSpan! ? 75 : 40,
+                        // compute an integer interval (~6 labels across)
+                        interval: (barSpots.length <= 6)
+                            ? 1.0
+                            : (barSpots.length / 6).ceilToDouble(),
+                        getTitlesWidget: (value, meta) {
+                          // treat value as an integer bar index
+                          final int idx = value.round();
+                          if (idx < 0 || idx >= barSpots.length) {
+                            return Container();
+                          }
+                          final int labelInterval = (barSpots.length <= 6)
+                              ? 1
+                              : (barSpots.length / 6).ceil();
+                          if (idx % labelInterval != 0) return Container();
 
-                            final int labelInterval = (barSpots.length <= 6)
-                                ? 1
-                                : (barSpots.length / 6).ceil();
-                            if (idx % labelInterval != 0) return Container();
-
-                            // parse/format the stored datetime string
-                            DateTime date;
-                            try {
-                              date = DateTime.parse(barSpots[idx].key);
-                            } catch (_) {
-                              // fallback: use raw string
-                              return Transform.rotate(
-                                angle: (pi / 4),
-                                alignment: Alignment.topLeft,
-                                child: Transform.translate(
-                                  offset: Offset(14, -5),
-                                  child: Text(barSpots[idx].key,
-                                      style: TextStyle(fontSize: 12)),
-                                ),
-                              );
-                            }
-
-                            final label = shortTimeSpan!
-                                ? DateFormat('MM-dd HH:00').format(date)
-                                : DateFormat('MM-dd').format(date);
-
+                          // parse/format the stored datetime string
+                          DateTime date;
+                          try {
+                            date = DateTime.parse(barSpots[idx].key);
+                          } catch (_) {
+                            // fallback: use raw string
                             return Transform.rotate(
                               angle: (pi / 4),
                               alignment: Alignment.topLeft,
                               child: Transform.translate(
-                                offset: Offset(shortTimeSpan! ? 14 : 10, -5),
-                                child:
-                                    Text(label, style: TextStyle(fontSize: 12)),
+                                offset: Offset(14, -5),
+                                child: Text(barSpots[idx].key,
+                                    style: TextStyle(fontSize: 12)),
                               ),
                             );
-                          },
-                        ),
-                      ),
-                      leftTitles: AxisTitles(
-                        axisNameWidget: Text(
-                          'Precipitation [in]',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 52,
-                          maxIncluded: false,
-                          minIncluded: false,
-                        ),
-                      ),
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
-                          reservedSize: 48,
-                          maxIncluded: false,
-                          minIncluded: false,
-                        ),
-                      ),
-                    ),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceBright,
-                    barGroups: List.generate(barSpots.length, (i) {
-                      return BarChartGroupData(
-                        x: i,
-                        barRods: [
-                          BarChartRodData(
-                            width: (barSpots.length / (35)),
-                            fromY: 0,
-                            toY: double.parse(
-                                barSpots[i].value.toStringAsFixed(3)),
-                            color: const Color.fromARGB(255, 0, 110, 201),
-                          ),
-                        ],
-                      );
-                    }),
-                    gridData: FlGridData(show: true),
-                    borderData: FlBorderData(show: false),
-                    barTouchData: BarTouchData(
-                      touchTooltipData: BarTouchTooltipData(
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          final date =
-                              DateTime.parse(barSpots[group.x.toInt()].key);
-                          final value = rod.toY;
-                          return BarTooltipItem(
-                            '${DateFormat('MM-dd-yyyy').format(date)}\n$value in',
-                            TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
+                          }
+
+                          final label = shortTimeSpan!
+                              ? DateFormat('MM-dd HH:00').format(date)
+                              : DateFormat('MM-dd').format(date);
+
+                          return Transform.rotate(
+                            angle: (pi / 4),
+                            alignment: Alignment.topLeft,
+                            child: Transform.translate(
+                              offset: Offset(shortTimeSpan! ? 14 : 10, -5),
+                              child:
+                                  Text(label, style: TextStyle(fontSize: 12)),
                             ),
                           );
                         },
                       ),
-                      touchCallback: (FlTouchEvent event, barTouchResponse) {},
-                      handleBuiltInTouches: true,
+                    ),
+                    leftTitles: AxisTitles(
+                      axisNameWidget: Text(
+                        'Precipitation [in]',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 52,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: false,
+                        reservedSize: 48,
+                        maxIncluded: false,
+                        minIncluded: false,
+                      ),
                     ),
                   ),
-                ));
+                  backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                  barGroups: List.generate(barSpots.length, (i) {
+                    return BarChartGroupData(
+                      x: i,
+                      barRods: [
+                        BarChartRodData(
+                          width: (MediaQuery.of(context).size.width * .75) /
+                              (barSpots.length * 1.3),
+                          fromY: 0,
+                          toY: double.parse(
+                              barSpots[i].value.toStringAsFixed(3)),
+                          color: const Color.fromARGB(255, 0, 110, 201),
+                        ),
+                      ],
+                    );
+                  }),
+                  gridData: FlGridData(show: true),
+                  borderData: FlBorderData(show: false),
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        final date =
+                            DateTime.parse(barSpots[group.x.toInt()].key);
+                        final value = rod.toY;
+                        return BarTooltipItem(
+                          '${DateFormat('MM-dd-yyyy').format(date)}\n$value in',
+                          TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        );
+                      },
+                    ),
+                    touchCallback: (FlTouchEvent event, barTouchResponse) {},
+                    handleBuiltInTouches: true,
+                  ),
+                  extraLinesData: ExtraLinesData(
+                    horizontalLines: [
+                      HorizontalLine(
+                        y: 0,
+                        color: Theme.of(context).colorScheme.primary,
+                        strokeWidth: 2,
+                      ),
+                    ],
+                  ),
+                )));
           }
         },
       ),
