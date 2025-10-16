@@ -71,7 +71,7 @@ class _AlertsState extends State<Alerts> {
             )
           ],
         )
-        : Center(child: Text('No Weather Alerts',textAlign: TextAlign.center,
+        : Center(child: Text('No Current NOAA Weather Alerts',textAlign: TextAlign.center,
         style: TextStyle(
           color: widget.isHydromet
           ? Theme.of(context).colorScheme.onPrimary

@@ -371,6 +371,16 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
+                                      Padding(padding: EdgeInsets.only(top: 3)),
+                                      Center(
+                                        child: Text(
+                                          'Current Wind',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: AspectRatio(
@@ -407,9 +417,11 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                                     'Wind Speed N/A',
                                                     style: TextStyle(
                                                         color: Colors.white,
-                                                        fontSize: 15),
+                                                        fontSize: 14),
                                                   ),
-                                      ))
+                                      )),
+                                      // Padding(padding: EdgeInsets.only(bottom: 2))
+
                                     ],
                                   ),
                                 ),

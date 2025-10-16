@@ -43,7 +43,15 @@ class _PrecipState extends State<Precip> {
       future: getData('https://mesonet.climate.umt.edu/api/v2/derived/ppt/?type=json&stations=${widget.id}'),
       builder: (context, snapshot) {
         if(snapshot.hasError){
-          return Text('Error: ${snapshot.error}');
+          return Center(
+            child: Text('We have encountered an error calculating precipitation summaries. Please try again later.',
+            style: TextStyle(
+              color: widget.isHydromet
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onPrimaryContainer
+            ),
+            textAlign: TextAlign.center,),
+          );
         } else if (snapshot.hasData){
             return ListView(
             padding: EdgeInsets.only(bottom: 0),
@@ -183,7 +191,7 @@ class _PrecipState extends State<Precip> {
                     children: [
                     FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
+                      child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer,)),
                     ),
                     Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
                     ],

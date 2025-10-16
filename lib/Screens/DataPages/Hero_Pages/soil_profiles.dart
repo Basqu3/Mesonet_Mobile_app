@@ -91,7 +91,10 @@ class _soil_profilesState extends State<soil_profiles> {
         //Text at the top of the card
         Text(
           'Soil Profiles',
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed),
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed,
+          fontSize: 14, fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
+          
         ),
         //=================================================================
         Expanded(
