@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class map extends StatefulWidget {
   const map({super.key});
@@ -170,6 +171,7 @@ class _mapState extends State<map> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
                     title: Text('Station Information'),
                     content: Text(
                         'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
@@ -230,6 +232,7 @@ class _mapState extends State<map> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
                     title: Text('Station Information'),
                     content: Text(
                         'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
@@ -393,7 +396,9 @@ class _mapState extends State<map> {
     //set global variables. Call from get markers
     for (final station in stationList) {
       // only consider HydroMet and recent records
-      if (station.subNetwork != 'HydroMet' || station.date == null || !isCurrentDate(station.date!)) {
+      if (station.subNetwork != 'HydroMet' ||
+          station.date == null ||
+          !isCurrentDate(station.date!)) {
         continue;
       }
 
@@ -551,6 +556,7 @@ class _mapState extends State<map> {
             ),
           ),
           drawer: Drawer(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
             child: favoriteStations.isEmpty
                 ? const Center(child: Text('No Favorites'))
                 : ListView.builder(
@@ -586,6 +592,7 @@ class _mapState extends State<map> {
                   ),
           ),
           endDrawer: Drawer(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
             child: FutureBuilder(
               future: returnStations(),
               builder: (context, snapshot) {
@@ -673,13 +680,19 @@ class _mapState extends State<map> {
                         ),
                         PolygonLayer(polygons: myGeoJson.polygons),
                         MarkerLayer(markers: snapshot.data as List<Marker>),
-                        Positioned(
-                          bottom: 0,
-                          left: 10,
-                          child: SimpleAttributionWidget(
-                            backgroundColor: Colors.transparent,
-                            source: Text('OpenStreetMap contributors'),
-                          ),
+                        RichAttributionWidget(
+                          popupBackgroundColor:
+                              Theme.of(context).colorScheme.tertiary,
+                          showFlutterMapAttribution: false,
+                          alignment: AttributionAlignment.bottomLeft,
+                          attributions: [
+                            TextSourceAttribution(
+                              'OpenStreetMap',
+                              onTap: () => launchUrl(Uri.parse(
+                                  'https://openstreetmap.org/copyright')),
+                            ),
+                          ],
+                          // backgroundColor: Colors.transparent,
                         ),
                       ],
                     );

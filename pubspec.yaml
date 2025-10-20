@@ -28,6 +28,7 @@ dependencies:
   choice: ^2.3.2
   cached_network_image: ^3.4.1
   flutter_launcher_icons: ^0.14.3
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

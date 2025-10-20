@@ -244,25 +244,34 @@ class _ChartmanagerState extends State<Chartmanager> {
   }
 
 //shows the datepicker
-  void _show() async {
-    final DateTimeRange? result = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2022, 1, 1),
-      lastDate: DateTime.now(),
-      currentDate: DateTime.now(),
-      saveText: 'Done',
-      helpText: "Select a date range",
-      cancelText: 'Cancel',
-      confirmText: 'Select',
-    );
+void _show() async {
+  final DateTimeRange? result = await showDateRangePicker(
+    builder: (context, child) => Theme(
+      data: Theme.of(context).copyWith(
+        dialogTheme: DialogThemeData(
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          surfaceTintColor: Colors.transparent,
+        ),
+        scaffoldBackgroundColor: Theme.of(context).colorScheme.tertiary,
+      ),
+      child: child!,
+    ),
+    context: context,
+    firstDate: DateTime(2022, 1, 1),
+    lastDate: DateTime.now(),
+    currentDate: DateTime.now(),
+    saveText: 'Done',
+    helpText: "Select a date range",
+    cancelText: 'Cancel',
+    confirmText: 'Select',
+  );
 
-    if (result != null) {
-      // Rebuild the UI
-      setState(() {
-        _selectedDateRange = result;
-      });
-    }
+  if (result != null) {
+    setState(() {
+      _selectedDateRange = result;
+    });
   }
+}
 
 //=================================================================================
 
@@ -2199,6 +2208,7 @@ class _ChartmanagerState extends State<Chartmanager> {
       }),
 
       endDrawer: Drawer(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         child: ListView(
           children: checklist(),
         ),
