@@ -681,6 +681,7 @@ class _mapState extends State<map> {
                         PolygonLayer(polygons: myGeoJson.polygons),
                         MarkerLayer(markers: snapshot.data as List<Marker>),
                         RichAttributionWidget(
+                          popupInitialDisplayDuration: Duration(seconds: 5),
                           popupBackgroundColor:
                               Theme.of(context).colorScheme.tertiary,
                           showFlutterMapAttribution: false,
