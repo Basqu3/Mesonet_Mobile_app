@@ -6,10 +6,8 @@ import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:info_popup/info_popup.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class AgrimetCurrentData extends StatefulWidget {
   final String id;

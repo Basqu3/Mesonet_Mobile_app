@@ -103,337 +103,334 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
           if (snapshot.hasError) {
             return const Center(child: Text('Error'));
           } else if (snapshot.hasData) {
-            return ClipRect(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  widget.isHydromet
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width /
-                                  (1520 / 868),
-                              child: Card(
-                                clipBehavior: Clip.hardEdge,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    widget.isHydromet
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HeroPhotoPage(
-                                                            id: widget.id,
-                                                          ))).then(
-                                                  (value) => setState(() {}));
-                                            },
-                                            child: Hero(
-                                                tag: widget.id,
-                                                child:
-                                                    PhotoPage(id: widget.id)))
-                                        : Container(),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FadeTransition(
-                                          opacity: Tween(begin: 1.0, end: 0.0)
-                                              .animate(
-                                            CurvedAnimation(
-                                              parent: _animationController,
-                                              curve: Interval(0.3, 1.0,
-                                                  curve: Curves.easeOutBack),
-                                            ),
-                                          ),
-                                          child: Icon(Icons.arrow_back,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FadeTransition(
-                                          opacity: Tween(begin: 1.0, end: 0.0)
-                                              .animate(
-                                            CurvedAnimation(
-                                              parent: _animationController,
-                                              curve: Interval(0.3, 1.0,
-                                                  curve: Curves.easeOutBack),
-                                            ),
-                                          ),
-                                          child: Icon(Icons.arrow_forward,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      : Container(),
-                  Flexible(
-                    flex: widget.isHydromet ? 1 : 1,
-                    child: Card(
-                      color: widget.isHydromet
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.secondary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                widget.isHydromet
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Flexible(
-                              child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: (snapshot.data!.airTemperature != null)
-                                ? Text(
-                                    'Air Temperature: ${snapshot.data!.airTemperature!.toStringAsFixed(2)}°F',
-                                    softWrap: false,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryFixed),
-                                  )
-                                : Text('Temperature N/A'),
-                          )),
-                          Flexible(
-                              child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: (snapshot.data!.relativeHumidity != null)
-                                ? Text(
-                                    'Relative Humidity: ${snapshot.data!.relativeHumidity!.toStringAsFixed(2)}%',
-                                    softWrap: false,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryFixed),
-                                  )
-                                : Text('Humidity N/A'),
-                          )),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width /
+                                (1520 / 868),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Stack(
+                                children: [
+                                  widget.isHydromet
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HeroPhotoPage(
+                                                          id: widget.id,
+                                                        ))).then(
+                                                (value) => setState(() {}));
+                                          },
+                                          child: Hero(
+                                              tag: widget.id,
+                                              child:
+                                                  PhotoPage(id: widget.id)))
+                                      : Container(),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FadeTransition(
+                                        opacity: Tween(begin: 1.0, end: 0.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
+                                          ),
+                                        ),
+                                        child: Icon(Icons.arrow_back,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FadeTransition(
+                                        opacity: Tween(begin: 1.0, end: 0.0)
+                                            .animate(
+                                          CurvedAnimation(
+                                            parent: _animationController,
+                                            curve: Interval(0.3, 1.0,
+                                                curve: Curves.easeOutBack),
+                                          ),
+                                        ),
+                                        child: Icon(Icons.arrow_forward,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                         ],
-                      ),
+                      )
+                    : Container(),
+                Flexible(
+                  flex: widget.isHydromet ? 1 : 1,
+                  child: Card(
+                    color: widget.isHydromet
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                  Flexible(
-                    flex: 7,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Flexible(
-                          flex: 3,
-                          child: Card(
-                            color: widget.isHydromet
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
                             child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Stack(children: [
-                                soil_profiles(
-                                  data: snapshot.data!,
-                                  isHydromet: widget.isHydromet,
-                                ),
-                                Align(
-                                    alignment: Alignment.topRight,
-                                    child: InfoPopupWidget(
-                                        contentTitle:
-                                            'We install soil sensors at various depths to monitor the flow of water.\n'
-                                            'The soil profile information includes the temperature of the soil at the given depths and the volumetric water content of the soil.\n'
-                                            'VWC = (volume of water/volume of soil expressed as a percentage)\n'
-                                            'The soil profile is a valuable tool for understanding the movement of water through the soil and the potential for runoff.',
-                                        arrowTheme: const InfoPopupArrowTheme(
-                                          color: Colors.white,
-                                        ),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white38,
-                                            ),
-                                            child: Icon(
-                                              Icons.question_mark_rounded,
-                                              size: 15,
-                                            ))))
-                              ]),
-                            ),
-                          ),
-                        ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: (snapshot.data!.airTemperature != null)
+                              ? Text(
+                                  'Air Temperature: ${snapshot.data!.airTemperature!.toStringAsFixed(2)}°F',
+                                  softWrap: false,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryFixed),
+                                )
+                              : Text('Temperature N/A'),
+                        )),
                         Flexible(
-                          flex: 5,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                flex: 2,
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      flex: 1,
-                                      child: Card(
-                                        color: widget.isHydromet
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Alerts(
-                                              lat: widget.lat,
-                                              lng: widget.lng,
-                                              isHydromet: widget.isHydromet,
-                                            )),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 1,
-                                      child: Card(
-                                        color: widget.isHydromet
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Stack(children: [
-                                            Precip(
-                                              id: widget.id,
-                                              isHydromet: widget.isHydromet,
-                                            ),
-                                            Align(
-                                              alignment: Alignment.bottomCenter,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: FadeTransition(
-                                                  opacity: Tween(
-                                                          begin: 1.0, end: 0.0)
-                                                      .animate(
-                                                    CurvedAnimation(
-                                                      parent:
-                                                          _animationController,
-                                                      curve: Interval(0.3, 1.0,
-                                                          curve: Curves
-                                                              .easeOutBack),
-                                                    ),
-                                                  ),
-                                                  child: Icon(
-                                                      Icons.arrow_downward,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                          ]),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Flexible(
-                                flex: 3,
-                                child: Card(
-                                  color: widget.isHydromet
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.secondary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Padding(padding: EdgeInsets.only(top: 3)),
-                                      Center(
-                                        child: Text(
-                                          'Current Wind',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: AspectRatio(
-                                            aspectRatio: 1 / 1,
-                                            child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                Image.asset(
-                                                  'lib/assets/cadrant.png',
-                                                ),
-                                                Transform.rotate(
-                                                  angle: snapshot.data!
-                                                      .windDirection as double,
-                                                  child: Image.asset(
-                                                    'lib/assets/compass.png',
-                                                    scale: 2.0,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child:
-                                            (snapshot.data!.windSpeed != null)
-                                                ? Text(
-                                                    '${snapshot.data!.windSpeed!.toString()} Mi/hr',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15),
-                                                  )
-                                                : Text(
-                                                    'Wind Speed N/A',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
-                                                  ),
-                                      ),
-                                      Padding(padding: EdgeInsets.only(bottom: 2))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: (snapshot.data!.relativeHumidity != null)
+                              ? Text(
+                                  'Relative Humidity: ${snapshot.data!.relativeHumidity!.toStringAsFixed(2)}%',
+                                  softWrap: false,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryFixed),
+                                )
+                              : Text('Humidity N/A'),
+                        )),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                Flexible(
+                  flex: 7,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Card(
+                          color: widget.isHydromet
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Stack(children: [
+                              soil_profiles(
+                                data: snapshot.data!,
+                                isHydromet: widget.isHydromet,
+                              ),
+                              Align(
+                                  alignment: Alignment.topRight,
+                                  child: InfoPopupWidget(
+                                      contentTitle:
+                                          'We install soil sensors at various depths to monitor the flow of water.\n'
+                                          'The soil profile information includes the temperature of the soil at the given depths and the volumetric water content of the soil.\n'
+                                          'VWC = (volume of water/volume of soil expressed as a percentage)\n'
+                                          'The soil profile is a valuable tool for understanding the movement of water through the soil and the potential for runoff.',
+                                      arrowTheme: const InfoPopupArrowTheme(
+                                        color: Colors.white,
+                                      ),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white38,
+                                          ),
+                                          child: Icon(
+                                            Icons.question_mark_rounded,
+                                            size: 15,
+                                          ))))
+                            ]),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 5,
+                        child: Column(
+                          children: [
+                            Flexible(
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    flex: 1,
+                                    child: Card(
+                                      color: widget.isHydromet
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Alerts(
+                                            lat: widget.lat,
+                                            lng: widget.lng,
+                                            isHydromet: widget.isHydromet,
+                                          )),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: Card(
+                                      color: widget.isHydromet
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Stack(children: [
+                                          Precip(
+                                            id: widget.id,
+                                            isHydromet: widget.isHydromet,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: FadeTransition(
+                                                opacity: Tween(
+                                                        begin: 1.0, end: 0.0)
+                                                    .animate(
+                                                  CurvedAnimation(
+                                                    parent:
+                                                        _animationController,
+                                                    curve: Interval(0.3, 1.0,
+                                                        curve: Curves
+                                                            .easeOutBack),
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                    Icons.arrow_downward,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ]),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Flexible(
+                              flex: 3,
+                              child: Card(
+                                color: widget.isHydromet
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.secondary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(padding: EdgeInsets.only(top: 3)),
+                                    Center(
+                                      child: Text(
+                                        'Current Wind',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: AspectRatio(
+                                          aspectRatio: 1 / 1,
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'lib/assets/cadrant.png',
+                                              ),
+                                              Transform.rotate(
+                                                angle: snapshot.data!
+                                                    .windDirection as double,
+                                                child: Image.asset(
+                                                  'lib/assets/compass.png',
+                                                  scale: 2.0,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Center(
+                                      child:
+                                          (snapshot.data!.windSpeed != null)
+                                              ? Text(
+                                                  '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15),
+                                                )
+                                              : Text(
+                                                  'Wind Speed N/A',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14),
+                                                ),
+                                    ),
+                                    Padding(padding: EdgeInsets.only(bottom: 2))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           } else {
             return Center(child: const CircularProgressIndicator());
