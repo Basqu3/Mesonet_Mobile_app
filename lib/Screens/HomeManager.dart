@@ -12,10 +12,10 @@ class HomeManager extends StatefulWidget {
 class _HomeManagerState extends State<HomeManager> {
   int _currentIndex = 1;
   final List _screens = [
-    const feedback(),
-    map(),
-    const about(),
-    const Streamflow(), //Add as soon as zach optimizes for mobile
+    const FeedbackPage(),
+    MapPage(),
+    const About(),
+    const Streamflow(),
   ];
 
   @override
@@ -57,28 +57,29 @@ class _HomeManagerState extends State<HomeManager> {
   }
 }
 
-class about extends StatefulWidget {
-  const about({super.key});
+class About extends StatefulWidget {
+  const About({super.key});
 
   @override
-  State<about> createState() => _aboutState();
+  State<About> createState() => _AboutState();
 }
 
-class _aboutState extends State<about> {
+class _AboutState extends State<About> {
   late WebViewController controller;
   @override
   void initState() {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://climate.umt.edu')) {
+            return NavigationDecision.navigate;
+          }
+          return NavigationDecision.prevent;
+        }),
+      )
       ..loadRequest(Uri.parse('https://climate.umt.edu/about/?theme=dark'));
-
-    NavigationDelegate(onNavigationRequest: (NavigationRequest request) {
-      if (request.url.startsWith('https://climate.umt.edu.com')) {
-        return NavigationDecision.navigate;
-      }
-      return NavigationDecision.prevent;
-    });
   }
 
   @override
@@ -93,15 +94,15 @@ class _aboutState extends State<about> {
   }
 }
 
-class feedback extends StatefulWidget {
+class FeedbackPage extends StatefulWidget {
   //https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form
-  const feedback({super.key});
+  const FeedbackPage({super.key});
 
   @override
-  State<feedback> createState() => _feedbackState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
-class _feedbackState extends State<feedback> {
+class _FeedbackPageState extends State<FeedbackPage> {
   late WebViewController controller;
 
   @override
@@ -109,16 +110,18 @@ class _feedbackState extends State<feedback> {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://airtable.com')) {
+              return NavigationDecision.navigate;
+            }
+            return NavigationDecision.prevent;
+          },
+        ),
+      )
       ..loadRequest(Uri.parse(
           'https://airtable.com/appUacO5Pq7wZYoJ3/pag3YMFrQcZAnaifj/form'));
-    NavigationDelegate(
-      onNavigationRequest: (NavigationRequest request) {
-        if (request.url.startsWith('https://airtable.com')) {
-          return NavigationDecision.navigate;
-        }
-        return NavigationDecision.prevent;
-      },
-    );
   }
 
   @override
@@ -135,6 +138,7 @@ class _feedbackState extends State<feedback> {
     ));
   }
 }
+
 class Streamflow extends StatefulWidget {
   const Streamflow({super.key});
 
@@ -150,15 +154,17 @@ class _StreamflowState extends State<Streamflow> {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://streamflow.climate.umt.edu/')) {
+              return NavigationDecision.navigate;
+            }
+            return NavigationDecision.prevent;
+          },
+        ),
+      )
       ..loadRequest(Uri.parse('https://streamflow.climate.umt.edu/'));
-    NavigationDelegate(
-      onNavigationRequest: (NavigationRequest request) {
-        if (request.url.startsWith('https://streamflow.climate.umt.edu/')) {
-          return NavigationDecision.navigate;
-        }
-        return NavigationDecision.prevent;
-      },
-    );
   }
 
   @override

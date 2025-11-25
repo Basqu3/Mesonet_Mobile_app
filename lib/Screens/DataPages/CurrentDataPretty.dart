@@ -2,6 +2,7 @@ import 'package:app_001/Screens/DataPages/Hero_Pages/soil_profiles.dart';
 import 'package:app_001/main.dart';
 import 'package:app_001/Screens/DataPages/Photos.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/heroPhotoPage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:info_popup/info_popup.dart';
@@ -45,7 +46,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
     _dataFuture = getData(
         'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}');
     _dataFuture.then((value) {
-      print('CurrentDataPretty: ${widget.id}');
+      if (kDebugMode) {
+        debugPrint('CurrentDataPretty loaded: ${widget.id}');
+      }
       if (!isCurrentDate(value.datetime!) && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -135,16 +138,15 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                           },
                                           child: Hero(
                                               tag: widget.id,
-                                              child:
-                                                  PhotoPage(id: widget.id)))
+                                              child: PhotoPage(id: widget.id)))
                                       : Container(),
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: FadeTransition(
-                                        opacity: Tween(begin: 1.0, end: 0.0)
-                                            .animate(
+                                        opacity:
+                                            Tween(begin: 1.0, end: 0.0).animate(
                                           CurvedAnimation(
                                             parent: _animationController,
                                             curve: Interval(0.3, 1.0,
@@ -161,8 +163,8 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: FadeTransition(
-                                        opacity: Tween(begin: 1.0, end: 0.0)
-                                            .animate(
+                                        opacity:
+                                            Tween(begin: 1.0, end: 0.0).animate(
                                           CurvedAnimation(
                                             parent: _animationController,
                                             curve: Interval(0.3, 1.0,
@@ -293,8 +295,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                               .colorScheme
                                               .secondary,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Padding(
                                           padding: const EdgeInsets.all(5.0),
@@ -316,8 +317,7 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                               .colorScheme
                                               .secondary,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(5.0),
@@ -332,15 +332,15 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                               padding:
                                                   const EdgeInsets.all(4.0),
                                               child: FadeTransition(
-                                                opacity: Tween(
-                                                        begin: 1.0, end: 0.0)
-                                                    .animate(
+                                                opacity:
+                                                    Tween(begin: 1.0, end: 0.0)
+                                                        .animate(
                                                   CurvedAnimation(
                                                     parent:
                                                         _animationController,
                                                     curve: Interval(0.3, 1.0,
-                                                        curve: Curves
-                                                            .easeOutBack),
+                                                        curve:
+                                                            Curves.easeOutBack),
                                                   ),
                                                 ),
                                                 child: Icon(
@@ -404,20 +404,19 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                       ),
                                     ),
                                     Center(
-                                      child:
-                                          (snapshot.data!.windSpeed != null)
-                                              ? Text(
-                                                  '${snapshot.data!.windSpeed!.toString()} Mi/hr',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15),
-                                                )
-                                              : Text(
-                                                  'Wind Speed N/A',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14),
-                                                ),
+                                      child: (snapshot.data!.windSpeed != null)
+                                          ? Text(
+                                              '${snapshot.data!.windSpeed!.toString()} Mi/hr',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15),
+                                            )
+                                          : Text(
+                                              'Wind Speed N/A',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            ),
                                     ),
                                     Padding(padding: EdgeInsets.only(bottom: 2))
                                   ],

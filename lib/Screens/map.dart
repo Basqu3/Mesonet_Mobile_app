@@ -1,5 +1,6 @@
 import 'package:app_001/Screens/StationPage.dart';
 import 'package:app_001/main.dart';
+import 'package:app_001/services/data_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,11 +15,11 @@ import 'package:rainbow_color/rainbow_color.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class map extends StatefulWidget {
-  const map({super.key});
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
   @override
-  State<map> createState() => _mapState();
+  State<MapPage> createState() => _MapPageState();
 }
 
 class StationMarker {
@@ -58,7 +59,17 @@ class StationMarker {
   }
 }
 
-class _mapState extends State<map> {
+class _MapPageState extends State<MapPage> {
+  // Constants
+  static const double _defaultMarkerSize = 14.0;
+  static const double _largeMarkerSize = 20.0;
+  static const double _zoomThresholdForLargeMarkers = 6.4;
+  static const double _sentinelMinTemp = 999.99;
+  static const double _sentinelMaxTemp = -999.99;
+  static const double _freezingPointF = 32.0;
+  static const double _initialMaxPrecip = 0.0;
+
+  // State variables
   late double _markerSize;
   late double maxTemp;
   late double minTemp;
@@ -77,6 +88,7 @@ class _mapState extends State<map> {
   late bool showHydroMet;
   late bool showAgrimet;
 
+  late Future<List<Marker>> _markersFuture;
   List<StationMarker> favoriteStations = [];
 
   //Defaults are set in initState
@@ -86,7 +98,7 @@ class _mapState extends State<map> {
     stationList = [];
     WidgetsBinding.instance.addPostFrameCallback((_) => loadPolygons());
     mapController = MapController();
-    _markerSize = 14.0; // Default marker size
+    _markerSize = _defaultMarkerSize;
 
     hydrometStations = Icon(
       Icons.circle_sharp,
@@ -102,15 +114,17 @@ class _mapState extends State<map> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) => loadInitialData());
 
-    maxTemp = -999.99; //force these to change when called by findRange
-    minTemp = 999.99; //need to init to avoid error
-    maxPrecip = 0;
+    maxTemp = _sentinelMaxTemp; //force these to change when called by findRange
+    minTemp = _sentinelMinTemp; //need to init to avoid error
+    maxPrecip = _initialMaxPrecip;
 
     showAggragateDataMarkers = true;
-    showPrecipAggragateDataMarker = true;
+    showPrecipAggragateDataMarker = false;
 
     showHydroMet = true;
     showAgrimet = false;
+
+    _markersFuture = getMarkers();
   }
 
   @override
@@ -136,7 +150,7 @@ class _mapState extends State<map> {
     try {
       await getStations(); // fills stationList
       await loadFavorites(); // fills favoriteStations and setState inside
-      await getMarkers(); // optional: ensure marker-related calculations run
+      _markersFuture = getMarkers(); // Update the future with loaded stations
     } catch (_) {
       // ignore errors here; FutureBuilder will handle later
     }
@@ -144,126 +158,93 @@ class _mapState extends State<map> {
     if (mounted) setState(() {});
   }
 
+  void _navigateToStation(StationMarker station, bool isHydromet) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HydroStationPage(
+          station: station,
+          hydroBool: isHydromet ? 1 : 0,
+        ),
+      ),
+    ).then((_) {
+      if (mounted) loadFavorites();
+    });
+  }
+
+  void _showStationInfo(StationMarker station, bool isHydromet) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          title: Text('Station Information'),
+          content: Text(
+            'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
+            'Station Name: ${station.name}\n'
+            'Station ID: ${station.id}\n'
+            'Latitude: ${station.lat}*\n'
+            'Longitude: ${station.lon}*\n'
+            'Air Temperature: ${station.air_temp}°F\n'
+            '${isHydromet ? '7-Day Precipitation: ${station.precipSummary}"\n\n' : '\n'}'
+            '*Latitude and Longitude are approximate.',
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color _getMarkerColor(StationMarker station, bool isHydromet) {
+    if (!isCurrentDate(station.date!)) {
+      return Colors.black54;
+    }
+
+    if (!showAggragateDataMarkers) {
+      return isHydromet
+          ? Color.fromARGB(255, 14, 70, 116)
+          : Color.fromARGB(255, 53, 110, 91);
+    }
+
+    if (isHydromet && showPrecipAggragateDataMarker) {
+      return setMarkerColor(station.precipSummary!, false);
+    }
+
+    return setMarkerColor(station.air_temp!, true);
+  }
+
+  Marker _buildStationMarker(StationMarker station) {
+    final isHydromet = station.subNetwork == "HydroMet";
+
+    return Marker(
+      height: _markerSize,
+      width: _markerSize,
+      point: LatLng(station.lat, station.lon),
+      child: GestureDetector(
+        onTap: () => _navigateToStation(station, isHydromet),
+        onLongPress: () => _showStationInfo(station, isHydromet),
+        child: Icon(
+          isHydromet ? Icons.circle_sharp : Icons.star,
+          color: _getMarkerColor(station, isHydromet),
+          size: _markerSize,
+        ),
+      ),
+    );
+  }
+
   List<Marker> parseToMarkers(List<StationMarker> stationList) {
     List<Marker> markers = [];
     for (StationMarker station in stationList) {
       if (showHydroMet && station.subNetwork == "HydroMet") {
-        markers.add(Marker(
-          height: _markerSize,
-          width: _markerSize,
-          point: LatLng(station.lat, station.lon),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HydroStationPage(station: station, hydroBool: 1),
-                ),
-              ).then((_) {
-                if (mounted) loadFavorites();
-              });
-            },
-            onLongPress: () {
-              //pop up text?
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    backgroundColor: Theme.of(context).colorScheme.tertiary,
-                    title: Text('Station Information'),
-                    content: Text(
-                        'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
-                        'Station Name: ${station.name}\n'
-                        'Station ID: ${station.id}\n'
-                        'Latitude: ${station.lat}*\n'
-                        'Longitude: ${station.lon}*\n'
-                        'Air Temperature: ${station.air_temp}°F\n'
-                        '7-Day Precipitation: ${station.precipSummary}"\n\n'
-                        '*Latitude and Longitude are approximate.'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Close'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Icon(
-              Icons.circle_sharp,
-              color: isCurrentDate(station.date!) //is current date
-                  ? showAggragateDataMarkers //show temp or precip data
-                      ? showPrecipAggragateDataMarker
-                          ? setMarkerColor(station.precipSummary!, false)
-                          : setMarkerColor(
-                              station.air_temp!, true) //show precip data
-                      : Color.fromARGB(255, 14, 70, 116)
-                  : Colors.black54,
-              size: _markerSize,
-            ),
-          ),
-        ));
+        markers.add(_buildStationMarker(station));
       }
       if (showAgrimet && station.subNetwork == "AgriMet") {
-        markers.add(Marker(
-          point: LatLng(station.lat, station.lon),
-          height: _markerSize,
-          width: _markerSize,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HydroStationPage(station: station, hydroBool: 0),
-                ),
-              ).then((_) {
-                if (mounted) loadFavorites();
-              });
-            },
-            onLongPress: () {
-              //pop up text?
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    backgroundColor: Theme.of(context).colorScheme.tertiary,
-                    title: Text('Station Information'),
-                    content: Text(
-                        'Latest Report: ${DateFormat('MM/dd/yyyy - kk:mm').format(DateTime.fromMillisecondsSinceEpoch(station.date!))}\n'
-                        'Station Name: ${station.name}\n'
-                        'Station ID: ${station.id}\n'
-                        'Latitude: ${station.lat}*\n'
-                        'Longitude: ${station.lon}*\n'
-                        'Air Temperature: ${station.air_temp}°F\n\n'
-                        '*Latitude and Longitude are approximate.'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Close'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Icon(
-              Icons.star,
-              color: isCurrentDate(station.date!)
-                  ? showAggragateDataMarkers
-                      ? setMarkerColor(station.air_temp!, true)
-                      : Color.fromARGB(255, 53, 110, 91)
-                  : Colors.black54,
-              size: _markerSize,
-            ),
-          ),
-        ));
+        markers.add(_buildStationMarker(station));
       }
     }
 
@@ -275,11 +256,34 @@ class _mapState extends State<map> {
     String url = 'https://mesonet.climate.umt.edu/api/v2/app/?type=json';
     String response = '';
     try {
-      response = await compute(apiCall, url);
+      response =
+          await DataCache.fetchWithCache(url, (url) => compute(apiCall, url));
     } catch (e) {
       if (kDebugMode) {
-        print('Error: $e');
+        debugPrint('Error loading stations: $e');
       }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Failed to load station data. Check your connection.'),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: () {
+                setState(() {
+                  DataCache.clearUrl(url); // Clear cache on retry
+                  _markersFuture = Future(() async {
+                    await getStations();
+                    return getMarkers();
+                  });
+                });
+              },
+            ),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+      return [];
     }
 
     final List<StationMarker> stationListTemp =
@@ -296,7 +300,6 @@ class _mapState extends State<map> {
   Future<List<Marker>> getMarkers() async {
     findRange(stationList); //setting max and min for markerColor
     List<Marker> markers = parseToMarkers(stationList);
-    //List<Marker> markers = await compute(parseToMarkers, stationList);
     return markers;
   }
 
@@ -339,38 +342,14 @@ class _mapState extends State<map> {
     return jsonStationList;
   }
 
-  // Future<List<StationMarker>> getFavoriteStationList() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? jsonStringList = prefs.getString('favorites');
-  //   Map<String, dynamic> jsonMAP = jsonStringList != null && jsonStringList.isNotEmpty
-  //     ? jsonDecode(jsonStringList)
-  //     : {"stations": []};
-  //   List<StationMarker> jsonStationList = [];
-  //   for (int i = 0; i < (jsonMAP['stations'].length); i++) {
-  //     jsonStationList.add(StationMarker(
-  //       name: jsonMAP['stations'][i]['name'],
-  //       id: jsonMAP['stations'][i]['id'],
-  //       subNetwork: jsonMAP['stations'][i]['sub_network'],
-  //       lat: jsonMAP['stations'][i]['lat'],
-  //       lon: jsonMAP['stations'][i]['lon'],
-  //       air_temp: jsonMAP['stations'][i]['air_temp'],
-  //       precipSummary: jsonMAP['stations'][i]['precipSummary'],
-  //       date: jsonMAP['stations'][i]['date'],
-  //     ));
-  //   }
-  //   setState(() {}); // Call setState once after the loop
-  //   return jsonStationList;
-  // }
-
   void _updateMarkerSize(double zoom) {
-    if (zoom > 6.4) {
+    double newSize = (zoom > _zoomThresholdForLargeMarkers)
+        ? _largeMarkerSize
+        : _defaultMarkerSize;
+    if (_markerSize != newSize) {
       setState(() {
-        //_markerSize = 50.0 * (zoom / 13.0);
-        _markerSize = 20;
-      });
-    } else {
-      setState(() {
-        _markerSize = 15;
+        _markerSize = newSize;
+        _markersFuture = getMarkers();
       });
     }
   }
@@ -428,7 +407,7 @@ class _mapState extends State<map> {
   Color setMarkerColor(double input, bool tempOrPrecip) {
     Rainbow rbColorTemp;
 
-    if (input < 32) {
+    if (input < _freezingPointF) {
       //dynamic color range with hard break at 32 F
       rbColorTemp = Rainbow(
         spectrum: [
@@ -439,7 +418,7 @@ class _mapState extends State<map> {
         ], //cold to hot
         rangeStart:
             minTemp, //min and max set in findRange() func called in getMarkers
-        rangeEnd: (maxTemp < 32) ? maxTemp : 32,
+        rangeEnd: (maxTemp < _freezingPointF) ? maxTemp : _freezingPointF,
       );
     } else {
       rbColorTemp = Rainbow(
@@ -448,7 +427,7 @@ class _mapState extends State<map> {
           Color.fromARGB(255, 253, 141, 60),
           Color.fromARGB(255, 240, 59, 32),
         ], //cold to hot
-        rangeStart: (minTemp > 32) ? minTemp : 32,
+        rangeStart: (minTemp > _freezingPointF) ? minTemp : _freezingPointF,
         rangeEnd: maxTemp,
       );
     }
@@ -476,25 +455,10 @@ class _mapState extends State<map> {
   IconData FABReturnIcon(int index) {
     //0 = temp, 1 = normal, 2 = precip
     if (index == 0) {
-      setState(() {
-        showAggragateDataMarkers = true;
-        showPrecipAggragateDataMarker = false;
-      });
-
       return Icons.thermostat;
     } else if (index == 1) {
-      setState(() {
-        showAggragateDataMarkers = false;
-        showPrecipAggragateDataMarker = false;
-      });
-
       return Icons.circle;
     } else {
-      setState(() {
-        showAggragateDataMarkers = true;
-        showPrecipAggragateDataMarker = true;
-      });
-
       return Icons.water_drop;
     }
   }
@@ -519,6 +483,18 @@ class _mapState extends State<map> {
                 } else {
                   markerindex = markerindex % 2;
                 }
+
+                if (markerindex == 0) {
+                  showAggragateDataMarkers = true;
+                  showPrecipAggragateDataMarker = false;
+                } else if (markerindex == 1) {
+                  showAggragateDataMarkers = false;
+                  showPrecipAggragateDataMarker = false;
+                } else {
+                  showAggragateDataMarkers = true;
+                  showPrecipAggragateDataMarker = true;
+                }
+                _markersFuture = getMarkers();
               });
             },
             child: GestureDetector(
@@ -644,7 +620,7 @@ class _mapState extends State<map> {
           body: Stack(
             children: [
               FutureBuilder(
-                future: getMarkers(),
+                future: _markersFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
@@ -888,34 +864,10 @@ class _mapState extends State<map> {
                                             showAgrimet = true;
                                             showHydroMet = true;
                                           }
+                                          _markersFuture = getMarkers();
                                         });
                                       },
                                     ),
-
-                                    // Switch(
-                                    //   value: showHydroMet,
-                                    //   onChanged: (value) {
-                                    //     setState(() {
-                                    //       showPrecipAggragateDataMarker = false;
-                                    //       showHydroMet = value;
-                                    //       //showAgrimet = value;
-                                    //       showAggragateDataMarkers = false;
-                                    //     });
-                                    //   },
-                                    //   activeColor:
-                                    //       Theme.of(context).colorScheme.onPrimary,
-                                    //   activeTrackColor: hydrometStations.color,
-                                    //   inactiveThumbColor: Theme.of(context)
-                                    //       .colorScheme
-                                    //       .onSecondary,
-                                    //   inactiveTrackColor: agrimetStations.color,
-                                    // ),
-                                    // Center(
-                                    //   child: Text(
-                                    //     showHydroMet ? 'HydroMet' : 'AgriMet',
-                                    //     style: TextStyle(color: Colors.black),
-                                    //   ),
-                                    // ),
                                   ],
                                 ))
                             : Container(),
