@@ -11,7 +11,6 @@ import 'dart:convert';
 import 'JSONData.dart';
 import 'Hero_Pages/Alerts.dart';
 import 'package:app_001/Screens/DataPages/Hero_Pages/Precip.dart';
-import 'package:flutter/services.dart';
 
 class CurrentDataPretty extends StatefulWidget {
   final String id;
@@ -52,11 +51,9 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
       if (!isCurrentDate(value.datetime!) && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Center(
-              child: Text(
-                'Data is not up to date! Shown data is from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))} which is the latest available data.',
-                textAlign: TextAlign.center,
-              ),
+            content: Text(
+              'Showing the latest available report from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))}.',
+              textAlign: TextAlign.center,
             ),
             duration: const Duration(seconds: 5),
           ),
@@ -97,14 +94,12 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return Scaffold(
       body: FutureBuilder(
         future: _dataFuture,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Error'));
+            return const Center(child: Text('Current conditions are unavailable.'));
           } else if (snapshot.hasData) {
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -205,11 +200,12 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimaryFixed),
+                                      color: Colors.white),
                                 )
-                              : Text('Temperature N/A'),
+                              : const Text(
+                                  'Temperature N/A',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         )),
                         Flexible(
                             child: Padding(
@@ -221,11 +217,12 @@ class _CurrentDataPrettyState extends State<CurrentDataPretty>
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimaryFixed),
+                                      color: Colors.white),
                                 )
-                              : Text('Humidity N/A'),
+                              : const Text(
+                                  'Humidity N/A',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         )),
                       ],
                     ),

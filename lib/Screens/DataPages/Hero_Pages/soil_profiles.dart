@@ -91,8 +91,11 @@ class _soil_profilesState extends State<soil_profiles> {
         //Text at the top of the card
         Text(
           'Soil Profiles',
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryFixed,
-          fontSize: 14, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
           textAlign: TextAlign.center,
           
         ),
@@ -115,35 +118,35 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Text('40"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text('20"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(' 8"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(' 4"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(' 2"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimary)),
+                                color: Colors.white)),
                           ),
                           ]
                         : [ //agrimet labels. no 2" sensor
@@ -152,28 +155,28 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Text('40"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSecondary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text('20"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSecondary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(' 8"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSecondary)),
+                                color: Colors.white)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 2.0),
                             child: Text(' 4"',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSecondary)),
+                                color: Colors.white)),
                           ),
                           ],
                   )),
@@ -198,7 +201,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature5.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -209,7 +215,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature10.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -220,7 +229,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature20.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -231,7 +243,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature50.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -242,7 +257,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature100.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -255,7 +273,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature10.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -266,7 +287,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature20.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -277,7 +301,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature50.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -288,16 +315,23 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilTemperature100.toString()}°F',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
                         ]
                       ),
                       
-                      Text("Temp",style: TextStyle(
-                        fontSize: 10
-                      ),),
+                      const Text(
+                        "Temp",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
                       ] 
                     ),
                   )),
@@ -325,7 +359,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC5.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -336,7 +373,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC10.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -347,7 +387,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC20.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -358,7 +401,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC50.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -369,7 +415,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC100.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -383,7 +432,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC10.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -394,7 +446,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC20.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -405,7 +460,10 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC50.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
@@ -416,16 +474,23 @@ class _soil_profilesState extends State<soil_profiles> {
                             child: Center(
                               child: Text(
                                 '${widget.data.soilVWC100.toString()}%',
-                                style: TextStyle(fontSize: 10),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           )),
                         ],
                       ),
 
-                      Text("VWC",style: TextStyle(
-                        fontSize: 10
-                      ),),
+                      const Text(
+                        "VWC",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
 
                       ] 
                     ),

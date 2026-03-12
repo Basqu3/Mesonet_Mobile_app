@@ -1,218 +1,154 @@
-import 'package:flutter/material.dart';
-import 'package:app_001/Screens/DataPages/pptData.dart';
 import 'dart:convert';
-import 'package:flutter_isolate/flutter_isolate.dart';
+
+import 'package:app_001/Screens/DataPages/pptData.dart';
 import 'package:app_001/main.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 
 class Precip extends StatefulWidget {
   final String id;
-    final bool isHydromet; 
-  const Precip({required this.id,required this.isHydromet,super.key});
+  final bool isHydromet;
+
+  const Precip({
+    required this.id,
+    required this.isHydromet,
+    super.key,
+  });
 
   @override
   State<Precip> createState() => _PrecipState();
 }
- 
+
 class _PrecipState extends State<Precip> {
-// Define the variable
+  late Future<pptData> _precipFuture;
 
   @override
   void initState() {
     super.initState();
-    getData('https://mesonet.climate.umt.edu/api/v2/derived/ppt/?type=json&stations=${widget.id}');
+    _precipFuture = getData(
+      'https://mesonet.climate.umt.edu/api/v2/derived/ppt/?type=json&stations=${widget.id}',
+    );
   }
 
-   @pragma('vm:entry-point')
+  @pragma('vm:entry-point')
   static Map<String, dynamic> parseToMap(String responseBody) {
     return json.decode(responseBody);
   }
 
   Future<pptData> getData(String url) async {
-    pptData responseMap;
-    String data = await flutterCompute(apiCall, url);
-    List<dynamic> dataMap = jsonDecode(data);
-    responseMap = pptData.fromJson(dataMap[0]);
-    return responseMap;
+    final String data = await flutterCompute(apiCall, url);
+    final List<dynamic> dataMap = jsonDecode(data) as List<dynamic>;
+    return pptData.fromJson(dataMap[0] as Map<String, dynamic>);
+  }
+
+  Widget _buildMetricCard(BuildContext context, String label, String value) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    return Card(
+      color: scheme.primaryContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: TextStyle(color: scheme.onPrimaryContainer),
+              ),
+            ),
+            Text(
+              value,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: scheme.onPrimaryContainer),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.isHydromet  // avoid the derived call for agrimet stations
+    if (!widget.isHydromet) {
+      return Center(
+        child: Text(
+          'Derived precipitation summaries are unavailable for AgriMet stations.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
+      );
+    }
 
-    ? FutureBuilder(
-      future: getData('https://mesonet.climate.umt.edu/api/v2/derived/ppt/?type=json&stations=${widget.id}'),
-      builder: (context, snapshot) {
-        if(snapshot.hasError){
+    return FutureBuilder<pptData>(
+      future: _precipFuture,
+      builder: (BuildContext context, AsyncSnapshot<pptData> snapshot) {
+        if (snapshot.hasError) {
           return Center(
-            child: Text('We have encountered an error calculating precipitation summaries. Please try again later.',
-            style: TextStyle(
-              color: widget.isHydromet
-              ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).colorScheme.onPrimaryContainer
+            child: Text(
+              'Precipitation summaries are unavailable right now.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
-            textAlign: TextAlign.center,),
           );
-        } else if (snapshot.hasData){
-            return ListView(
-            padding: EdgeInsets.only(bottom: 0),
-          shrinkWrap: true,
-          children: [
-            if (snapshot.data?.twentyFourHourPPT != null)
-                if (snapshot.data?.twentyFourHourPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                      '24 Hour Precipitation:',
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                      ),
-                    ),
-                    Text(
-                      '${snapshot.data!.twentyFourHourPPT} in',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                    ),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.sevenDayPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('7 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ),
-                    Text('${snapshot.data!.sevenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.fourteenDayPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('14 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ),
-                    Text('${snapshot.data!.fourteenDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.thirtyDayPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('30 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ),
-                    Text('${snapshot.data!.thirtyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.ninetyDayPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('90 Day Precipitation:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ),
-                    Text('${snapshot.data!.ninetyDayPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.PPTsinceMidnight != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('Precipitation Since Midnight:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ),
-                    Text('${snapshot.data!.PPTsinceMidnight} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-                if (snapshot.data?.YTDPPT != null)
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('Precipitation Year to Date:', style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer,)),
-                    ),
-                    Text('${snapshot.data!.YTDPPT} in', textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)),
-                    ],
-                  ),
-                  ),
-                ),
-            ]
-
-
-                    );
-        } else {
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary));
         }
+
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final pptData data = snapshot.data!;
+        return ListView(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          children: <Widget>[
+            if (data.twentyFourHourPPT != null)
+              _buildMetricCard(
+                context,
+                '24-hour precipitation',
+                '${data.twentyFourHourPPT} in',
+              ),
+            if (data.sevenDayPPT != null)
+              _buildMetricCard(
+                context,
+                '7-day precipitation',
+                '${data.sevenDayPPT} in',
+              ),
+            if (data.fourteenDayPPT != null)
+              _buildMetricCard(
+                context,
+                '14-day precipitation',
+                '${data.fourteenDayPPT} in',
+              ),
+            if (data.thirtyDayPPT != null)
+              _buildMetricCard(
+                context,
+                '30-day precipitation',
+                '${data.thirtyDayPPT} in',
+              ),
+            if (data.ninetyDayPPT != null)
+              _buildMetricCard(
+                context,
+                '90-day precipitation',
+                '${data.ninetyDayPPT} in',
+              ),
+            if (data.PPTsinceMidnight != null)
+              _buildMetricCard(
+                context,
+                'Precipitation since midnight',
+                '${data.PPTsinceMidnight} in',
+              ),
+            if (data.YTDPPT != null)
+              _buildMetricCard(
+                context,
+                'Year-to-date precipitation',
+                '${data.YTDPPT} in',
+              ),
+          ],
+        );
       },
-      
-    ) //Switch case for agrimet stations. Have to derive the precip manually
-    : Center(child: Text('No Derived Precip Data Available for Agrimet Stations',textAlign: TextAlign.center,
-    style: TextStyle(
-      color: widget.isHydromet
-      ? Theme.of(context).colorScheme.onPrimary
-      : Theme.of(context).colorScheme.onPrimaryContainer
-    ),));
+    );
   }
 }

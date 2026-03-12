@@ -1,34 +1,34 @@
 name: app_001
 description: "An app for the montana climate office to display mesonet data"
 publish_to: 'none'
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ^3.5.4
 
 dependencies:
-  fl_chart: ^1.1.1
   flutter:
     sdk: flutter
   flutter_isolate: ^2.1.0
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.5.4
   flutter_map: ^7.0.2
   flutter_map_geojson: ^1.0.8
   gradient_icon: ^2.0.9
-  http: ^1.2.2
-  intl: ^0.20.1
+  http: ^1.6.0
+  intl: ^0.20.2
   latlong2: ^0.9.1
-  permission_handler: ^12.0.0+1
+  permission_handler: ^12.0.1
   rainbow_color: ^2.0.1
   transparent_image: ^2.0.1
   weather_icons: ^3.0.0
-  webview_flutter: ^4.10.0
+  webview_flutter: ^4.13.1
   info_popup: ^4.3.2
   toggle_switch: ^2.3.0
   choice: ^2.3.2
   cached_network_image: ^3.4.1
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
   url_launcher: ^6.3.2
+  graphic: ^2.7.0
 
 dev_dependencies:
   flutter_test:

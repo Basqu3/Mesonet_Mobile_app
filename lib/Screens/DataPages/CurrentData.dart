@@ -14,9 +14,14 @@ class Currentdata extends StatefulWidget {
 }
 
 class _CurrentdataState extends State<Currentdata> {
+  late Future<Map<String, dynamic>> _dataFuture;
+
   @override
   initState() {
     super.initState();
+    _dataFuture = getData(
+      'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}',
+    );
   }
 
   @pragma('vm:entry-point')
@@ -48,11 +53,10 @@ class _CurrentdataState extends State<Currentdata> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getData(
-              'https://mesonet.climate.umt.edu/api/v2/latest/?type=json&stations=${widget.id}'),
+          future: _dataFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Placeholder();
+              return const Center(child: Text('Current observations are unavailable.'));
             } else if (snapshot.hasData) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),

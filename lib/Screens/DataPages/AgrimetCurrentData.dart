@@ -46,11 +46,9 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
       if (!isCurrentDate(value.datetime!) && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Center(
-              child: Text(
-                'Data is not up to date! Shown data is from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))} which is the latest available data.',
-                textAlign: TextAlign.center,
-              ),
+            content: Text(
+              'Showing the latest available report from ${DateFormat('MM/dd/yyyy').format(DateTime.fromMillisecondsSinceEpoch(value.datetime!))}.',
+              textAlign: TextAlign.center,
             ),
             duration: const Duration(seconds: 5),
           ),
@@ -96,11 +94,15 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
       future: _dataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return const Center(child: Text('Current conditions are unavailable.'));
         } else if (!snapshot.hasData) {
-          return const Center(child: Text('No data available'));
+          return const Center(child: Text('No current conditions available.'));
         } else {
           Data data = snapshot.data!;
           return Column(
@@ -254,12 +256,13 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                                                           fontSize: 14,
                                                           fontWeight:
                                                               FontWeight.w600,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
+                                                          color: Colors.white),
                                                     )
-                                                  : Text('Temperature N/A'),
+                                                  : const Text(
+                                                      'Temperature N/A',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                             )),
                                             Flexible(
                                                 child: Padding(
@@ -275,12 +278,13 @@ class _AgrimetCurrentDataState extends State<AgrimetCurrentData>
                                                           fontSize: 14,
                                                           fontWeight:
                                                               FontWeight.w600,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
+                                                          color: Colors.white),
                                                     )
-                                                  : Text('Humidity N/A'),
+                                                  : const Text(
+                                                      'Humidity N/A',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                             )),
                                           ],
                                         ),

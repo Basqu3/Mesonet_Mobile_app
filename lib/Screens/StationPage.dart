@@ -4,7 +4,6 @@ import 'package:app_001/Screens/DataPages/ChartManager.dart';
 import 'package:app_001/Screens/DataPages/CurrentData.dart';
 import 'package:app_001/Screens/DataPages/CurrentDataPretty.dart';
 import 'package:app_001/Screens/DataPages/AgrimetCurrentData.dart';
-import 'package:app_001/Screens/Forcast.dart';
 import 'package:app_001/Screens/map.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +20,11 @@ class HydroStationPage extends StatefulWidget {
 }
 
 class _HydroStationPageState extends State<HydroStationPage> {
+  static const Color _favoriteActiveColor = Color(0xFFFFC857);
+  static const Color _favoriteInactiveColor = Colors.white;
+  static const Color _pageIndicatorActiveColor = Color(0xFFFFC857);
+  static const Color _pageIndicatorInactiveColor = Color(0xFFF8FAFC);
+
   late bool remove;
   late List<Widget> _pages;
 
@@ -38,11 +42,6 @@ class _HydroStationPageState extends State<HydroStationPage> {
     //setting pages for viewing agrimet
     if (hydroBool == 1) {
       _pages = [
-        Forcast(
-          lat: widget.station.lat,
-          lng: widget.station.lon,
-          isHydromet: true,
-        ), //setting pages
         Currentdata(
           id: id,
           isHydromet: true,
@@ -60,11 +59,6 @@ class _HydroStationPageState extends State<HydroStationPage> {
       ];
     } else {
       _pages = [
-        Forcast(
-          lat: widget.station.lat,
-          lng: widget.station.lon,
-          isHydromet: false,
-        ),
         Currentdata(
           id: id,
           isHydromet: false,
@@ -84,8 +78,7 @@ class _HydroStationPageState extends State<HydroStationPage> {
   }
 
   final _pageController = PageController(
-    initialPage:
-        2, //initial page for the marker. index starts at 0 and follows the lists above. Don't index out of range for the shorter list
+    initialPage: 1,
     viewportFraction: 1,
   );
 
@@ -153,19 +146,37 @@ class _HydroStationPageState extends State<HydroStationPage> {
     });
   }
 
-  int _activePage = 2;
+  int _activePage = 1;
 
   @override
   Widget build(BuildContext context) {
+    final Color headerColor = widget.station.subNetwork == 'HydroMet'
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.secondary;
     return Scaffold(
         appBar: AppBar(
+          foregroundColor: Colors.white,
+          backgroundColor: headerColor,
           actions: [
             IconButton(
+              tooltip: remove ? 'Remove from favorites' : 'Add to favorites',
               icon: Icon(
                 Icons.star,
-                color: remove
-                    ? Colors.yellow
-                    : Theme.of(context).colorScheme.onPrimary,
+                color:
+                    remove ? _favoriteActiveColor : _favoriteInactiveColor,
+                shadows: remove
+                    ? const <Shadow>[
+                        Shadow(
+                          blurRadius: 10,
+                          color: Color(0x99000000),
+                        ),
+                      ]
+                    : const <Shadow>[
+                        Shadow(
+                          blurRadius: 6,
+                          color: Color(0x66000000),
+                        ),
+                      ],
               ),
               onPressed: () {
                 createFavoritesJson(); //saving to favorites
@@ -174,16 +185,13 @@ class _HydroStationPageState extends State<HydroStationPage> {
           ],
           title: Text(
             widget.station.name,
-            style: TextStyle(
-                fontWeight: FontWeight.w800,
-                color: Theme.of(context).colorScheme.onPrimaryFixed),
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
           ),
           centerTitle: true,
-          iconTheme:
-              IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          backgroundColor: (widget.station.subNetwork == 'HydroMet')
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.secondary,
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Stack(
           children: [
@@ -219,15 +227,25 @@ class _HydroStationPageState extends State<HydroStationPage> {
                                             const Duration(milliseconds: 300),
                                         curve: Curves.easeIn);
                                   },
-                                  child: CircleAvatar(
-                                    radius: 8,
-                                    backgroundColor: _activePage == index
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .tertiary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary,
+                                  child: Container(
+                                    width: 16,
+                                    height: 16,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _activePage == index
+                                          ? _pageIndicatorActiveColor
+                                          : _pageIndicatorInactiveColor,
+                                      border: Border.all(
+                                        color: const Color(0xB3000000),
+                                        width: 1.2,
+                                      ),
+                                      boxShadow: const <BoxShadow>[
+                                        BoxShadow(
+                                          blurRadius: 6,
+                                          color: Color(0x40000000),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ))),

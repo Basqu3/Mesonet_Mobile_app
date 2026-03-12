@@ -11,7 +11,7 @@ class HomeManager extends StatefulWidget {
 
 class _HomeManagerState extends State<HomeManager> {
   int _currentIndex = 1;
-  final List _screens = [
+  final List<Widget> _screens = <Widget>[
     const FeedbackPage(),
     MapPage(),
     const About(),
@@ -23,10 +23,6 @@ class _HomeManagerState extends State<HomeManager> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onTertiary,
-          selectedItemColor: Theme.of(context).colorScheme.tertiary,
           currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
